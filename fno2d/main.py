@@ -7,7 +7,7 @@ import time
 from neuralop.models import FNO
 from fno2d.train import train
 
-from utils.save import save_result
+from utils_project.save import save_result
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")

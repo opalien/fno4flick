@@ -1,0 +1,1142 @@
+./polarisation_P.h5
+Failed to decode the file, as it is not saved with UTF-8 encoding.
+--- START FILE: ./readme ---
+Test
+--- END FILE: ./readme ---
+--- START FILE: ./.gitignore ---
+data/brut/*
+data/plot/*
+data/test/*
+data/train/*
+
+
+*.pyc
+*/__pycache__/*
+*.h5
+*.xdmf
+--- END FILE: ./.gitignore ---
+--- START FILE: ./fno2d/params ---
+-l 4 -c 32 -m 64 -e 500
+-l 4 -c 32 -m 128 -e 500
+-l 4 -c 32 -m 256 -e 500
+-l 4 -c 64 -m 64 -e 500
+-l 4 -c 64 -m 128 -e 500
+-l 4 -c 64 -m 256 -e 500
+-l 4 -c 128 -m 64 -e 500
+-l 4 -c 128 -m 128 -e 500
+-l 4 -c 128 -m 256 -e 500
+-l 8 -c 32 -m 64 -e 500
+-l 8 -c 32 -m 128 -e 500
+-l 8 -c 32 -m 256 -e 500
+-l 8 -c 64 -m 64 -e 500
+-l 8 -c 64 -m 128 -e 500
+-l 8 -c 64 -m 256 -e 500
+-l 8 -c 128 -m 64 -e 500
+-l 8 -c 128 -m 128 -e 500
+-l 8 -c 128 -m 256 -e 500
+-l 16 -c 32 -m 64 -e 500
+-l 16 -c 32 -m 128 -e 500
+-l 16 -c 32 -m 256 -e 500
+-l 16 -c 64 -m 64 -e 500
+-l 16 -c 64 -m 128 -e 500
+-l 16 -c 64 -m 256 -e 500
+-l 16 -c 128 -m 64 -e 500
+-l 16 -c 128 -m 128 -e 500
+-l 16 -c 128 -m 256 -e 500
+-l 4 -c 32 -m 64 -e 500
+-l 4 -c 32 -m 128 -e 500
+-l 4 -c 32 -m 256 -e 500
+-l 4 -c 64 -m 64 -e 500
+-l 4 -c 64 -m 128 -e 500
+-l 4 -c 64 -m 256 -e 500
+-l 4 -c 128 -m 64 -e 500
+-l 4 -c 128 -m 128 -e 500
+-l 4 -c 128 -m 256 -e 500
+-l 8 -c 32 -m 64 -e 500
+-l 8 -c 32 -m 128 -e 500
+-l 8 -c 32 -m 256 -e 500
+-l 8 -c 64 -m 64 -e 500
+-l 8 -c 64 -m 128 -e 500
+-l 8 -c 64 -m 256 -e 500
+-l 8 -c 128 -m 64 -e 500
+-l 8 -c 128 -m 128 -e 500
+-l 8 -c 128 -m 256 -e 500
+-l 16 -c 32 -m 64 -e 500
+-l 16 -c 32 -m 128 -e 500
+-l 16 -c 32 -m 256 -e 500
+-l 16 -c 64 -m 64 -e 500
+-l 16 -c 64 -m 128 -e 500
+-l 16 -c 64 -m 256 -e 500
+-l 16 -c 128 -m 64 -e 500
+-l 16 -c 128 -m 128 -e 500
+-l 16 -c 128 -m 256 -e 500
+-l 4 -c 32 -m 64 -e 500
+-l 4 -c 32 -m 128 -e 500
+-l 4 -c 32 -m 256 -e 500
+-l 4 -c 64 -m 64 -e 500
+-l 4 -c 64 -m 128 -e 500
+-l 4 -c 64 -m 256 -e 500
+-l 4 -c 128 -m 64 -e 500
+-l 4 -c 128 -m 128 -e 500
+-l 4 -c 128 -m 256 -e 500
+-l 8 -c 32 -m 64 -e 500
+-l 8 -c 32 -m 128 -e 500
+-l 8 -c 32 -m 256 -e 500
+-l 8 -c 64 -m 64 -e 500
+-l 8 -c 64 -m 128 -e 500
+-l 8 -c 64 -m 256 -e 500
+-l 8 -c 128 -m 64 -e 500
+-l 8 -c 128 -m 128 -e 500
+-l 8 -c 128 -m 256 -e 500
+-l 16 -c 32 -m 64 -e 500
+-l 16 -c 32 -m 128 -e 500
+-l 16 -c 32 -m 256 -e 500
+-l 16 -c 64 -m 64 -e 500
+-l 16 -c 64 -m 128 -e 500
+-l 16 -c 64 -m 256 -e 500
+-l 16 -c 128 -m 64 -e 500
+-l 16 -c 128 -m 128 -e 500
+-l 16 -c 128 -m 256 -e 500
+-l 4 -c 32 -m 64 -e 500
+-l 4 -c 32 -m 128 -e 500
+-l 4 -c 32 -m 256 -e 500
+-l 4 -c 64 -m 64 -e 500
+-l 4 -c 64 -m 128 -e 500
+-l 4 -c 64 -m 256 -e 500
+-l 4 -c 128 -m 64 -e 500
+-l 4 -c 128 -m 128 -e 500
+-l 4 -c 128 -m 256 -e 500
+-l 8 -c 32 -m 64 -e 500
+-l 8 -c 32 -m 128 -e 500
+-l 8 -c 32 -m 256 -e 500
+-l 8 -c 64 -m 64 -e 500
+-l 8 -c 64 -m 128 -e 500
+-l 8 -c 64 -m 256 -e 500
+-l 8 -c 128 -m 64 -e 500
+-l 8 -c 128 -m 128 -e 500
+-l 8 -c 128 -m 256 -e 500
+-l 16 -c 32 -m 64 -e 500
+-l 16 -c 32 -m 128 -e 500
+-l 16 -c 32 -m 256 -e 500
+-l 16 -c 64 -m 64 -e 500
+-l 16 -c 64 -m 128 -e 500
+-l 16 -c 64 -m 256 -e 500
+-l 16 -c 128 -m 64 -e 500
+-l 16 -c 128 -m 128 -e 500
+-l 16 -c 128 -m 256 -e 500
+-l 4 -c 32 -m 64 -e 500
+-l 4 -c 32 -m 128 -e 500
+-l 4 -c 32 -m 256 -e 500
+-l 4 -c 64 -m 64 -e 500
+-l 4 -c 64 -m 128 -e 500
+-l 4 -c 64 -m 256 -e 500
+-l 4 -c 128 -m 64 -e 500
+-l 4 -c 128 -m 128 -e 500
+-l 4 -c 128 -m 256 -e 500
+-l 8 -c 32 -m 64 -e 500
+-l 8 -c 32 -m 128 -e 500
+-l 8 -c 32 -m 256 -e 500
+-l 8 -c 64 -m 64 -e 500
+-l 8 -c 64 -m 128 -e 500
+-l 8 -c 64 -m 256 -e 500
+-l 8 -c 128 -m 64 -e 500
+-l 8 -c 128 -m 128 -e 500
+-l 8 -c 128 -m 256 -e 500
+-l 16 -c 32 -m 64 -e 500
+-l 16 -c 32 -m 128 -e 500
+-l 16 -c 32 -m 256 -e 500
+-l 16 -c 64 -m 64 -e 500
+-l 16 -c 64 -m 128 -e 500
+-l 16 -c 64 -m 256 -e 500
+-l 16 -c 128 -m 64 -e 500
+-l 16 -c 128 -m 128 -e 500
+-l 16 -c 128 -m 256 -e 500
+-l 4 -c 32 -m 64 -e 500
+-l 4 -c 32 -m 128 -e 500
+-l 4 -c 32 -m 256 -e 500
+-l 4 -c 64 -m 64 -e 500
+-l 4 -c 64 -m 128 -e 500
+-l 4 -c 64 -m 256 -e 500
+-l 4 -c 128 -m 64 -e 500
+-l 4 -c 128 -m 128 -e 500
+-l 4 -c 128 -m 256 -e 500
+-l 8 -c 32 -m 64 -e 500
+-l 8 -c 32 -m 128 -e 500
+-l 8 -c 32 -m 256 -e 500
+-l 8 -c 64 -m 64 -e 500
+-l 8 -c 64 -m 128 -e 500
+-l 8 -c 64 -m 256 -e 500
+-l 8 -c 128 -m 64 -e 500
+-l 8 -c 128 -m 128 -e 500
+-l 8 -c 128 -m 256 -e 500
+-l 16 -c 32 -m 64 -e 500
+-l 16 -c 32 -m 128 -e 500
+-l 16 -c 32 -m 256 -e 500
+-l 16 -c 64 -m 64 -e 500
+-l 16 -c 64 -m 128 -e 500
+-l 16 -c 64 -m 256 -e 500
+-l 16 -c 128 -m 64 -e 500
+-l 16 -c 128 -m 128 -e 500
+-l 16 -c 128 -m 256 -e 500
+-l 4 -c 32 -m 64 -e 500
+-l 4 -c 32 -m 128 -e 500
+-l 4 -c 32 -m 256 -e 500
+-l 4 -c 64 -m 64 -e 500
+-l 4 -c 64 -m 128 -e 500
+-l 4 -c 64 -m 256 -e 500
+-l 4 -c 128 -m 64 -e 500
+-l 4 -c 128 -m 128 -e 500
+-l 4 -c 128 -m 256 -e 500
+-l 8 -c 32 -m 64 -e 500
+-l 8 -c 32 -m 128 -e 500
+-l 8 -c 32 -m 256 -e 500
+-l 8 -c 64 -m 64 -e 500
+-l 8 -c 64 -m 128 -e 500
+-l 8 -c 64 -m 256 -e 500
+-l 8 -c 128 -m 64 -e 500
+-l 8 -c 128 -m 128 -e 500
+-l 8 -c 128 -m 256 -e 500
+-l 16 -c 32 -m 64 -e 500
+-l 16 -c 32 -m 128 -e 500
+-l 16 -c 32 -m 256 -e 500
+-l 16 -c 64 -m 64 -e 500
+-l 16 -c 64 -m 128 -e 500
+-l 16 -c 64 -m 256 -e 500
+-l 16 -c 128 -m 64 -e 500
+-l 16 -c 128 -m 128 -e 500
+-l 16 -c 128 -m 256 -e 500
+-l 4 -c 32 -m 64 -e 500
+-l 4 -c 32 -m 128 -e 500
+-l 4 -c 32 -m 256 -e 500
+-l 4 -c 64 -m 64 -e 500
+-l 4 -c 64 -m 128 -e 500
+-l 4 -c 64 -m 256 -e 500
+-l 4 -c 128 -m 64 -e 500
+-l 4 -c 128 -m 128 -e 500
+-l 4 -c 128 -m 256 -e 500
+-l 8 -c 32 -m 64 -e 500
+-l 8 -c 32 -m 128 -e 500
+-l 8 -c 32 -m 256 -e 500
+-l 8 -c 64 -m 64 -e 500
+-l 8 -c 64 -m 128 -e 500
+-l 8 -c 64 -m 256 -e 500
+-l 8 -c 128 -m 64 -e 500
+-l 8 -c 128 -m 128 -e 500
+-l 8 -c 128 -m 256 -e 500
+-l 16 -c 32 -m 64 -e 500
+-l 16 -c 32 -m 128 -e 500
+-l 16 -c 32 -m 256 -e 500
+-l 16 -c 64 -m 64 -e 500
+-l 16 -c 64 -m 128 -e 500
+-l 16 -c 64 -m 256 -e 500
+-l 16 -c 128 -m 64 -e 500
+-l 16 -c 128 -m 128 -e 500
+-l 16 -c 128 -m 256 -e 500
+-l 4 -c 32 -m 64 -e 500
+-l 4 -c 32 -m 128 -e 500
+-l 4 -c 32 -m 256 -e 500
+-l 4 -c 64 -m 64 -e 500
+-l 4 -c 64 -m 128 -e 500
+-l 4 -c 64 -m 256 -e 500
+-l 4 -c 128 -m 64 -e 500
+-l 4 -c 128 -m 128 -e 500
+-l 4 -c 128 -m 256 -e 500
+-l 8 -c 32 -m 64 -e 500
+-l 8 -c 32 -m 128 -e 500
+-l 8 -c 32 -m 256 -e 500
+-l 8 -c 64 -m 64 -e 500
+-l 8 -c 64 -m 128 -e 500
+-l 8 -c 64 -m 256 -e 500
+-l 8 -c 128 -m 64 -e 500
+-l 8 -c 128 -m 128 -e 500
+-l 8 -c 128 -m 256 -e 500
+-l 16 -c 32 -m 64 -e 500
+-l 16 -c 32 -m 128 -e 500
+-l 16 -c 32 -m 256 -e 500
+-l 16 -c 64 -m 64 -e 500
+-l 16 -c 64 -m 128 -e 500
+-l 16 -c 64 -m 256 -e 500
+-l 16 -c 128 -m 64 -e 500
+-l 16 -c 128 -m 128 -e 500
+-l 16 -c 128 -m 256 -e 500
+-l 4 -c 32 -m 64 -e 500
+-l 4 -c 32 -m 128 -e 500
+-l 4 -c 32 -m 256 -e 500
+-l 4 -c 64 -m 64 -e 500
+-l 4 -c 64 -m 128 -e 500
+-l 4 -c 64 -m 256 -e 500
+-l 4 -c 128 -m 64 -e 500
+-l 4 -c 128 -m 128 -e 500
+-l 4 -c 128 -m 256 -e 500
+-l 8 -c 32 -m 64 -e 500
+-l 8 -c 32 -m 128 -e 500
+-l 8 -c 32 -m 256 -e 500
+-l 8 -c 64 -m 64 -e 500
+-l 8 -c 64 -m 128 -e 500
+-l 8 -c 64 -m 256 -e 500
+-l 8 -c 128 -m 64 -e 500
+-l 8 -c 128 -m 128 -e 500
+-l 8 -c 128 -m 256 -e 500
+-l 16 -c 32 -m 64 -e 500
+-l 16 -c 32 -m 128 -e 500
+-l 16 -c 32 -m 256 -e 500
+-l 16 -c 64 -m 64 -e 500
+-l 16 -c 64 -m 128 -e 500
+-l 16 -c 64 -m 256 -e 500
+-l 16 -c 128 -m 64 -e 500
+-l 16 -c 128 -m 128 -e 500
+-l 16 -c 128 -m 256 -e 500
+
+--- END FILE: ./fno2d/params ---
+--- START FILE: ./fno2d/main.py ---
+from fno2d.dataset import Dataset
+import torch
+from torch import Tensor
+import argparse
+import os
+import time
+from neuralop.models import FNO
+from fno2d.train import train
+
+from utils.save import save_result
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"Using device: {device}")
+match os.cpu_count():
+    case None:  torch.set_num_threads(1)
+    case n:     torch.set_num_threads(n)
+
+parser = argparse.ArgumentParser(description="PDE solving.")
+parser.add_argument("-l", "--n_layers", type=int, default=2, help="number of layers")
+parser.add_argument("-m", "--n_modes", type=int, default=16, help="number of modes")
+parser.add_argument("-c", "--hidden_channels", type=int, default=16, help="number of hidden channels")
+parser.add_argument("-e", "--epochs", type=int, default=100, help="number of training epochs")
+args = parser.parse_args()
+
+n_modes = args.n_modes
+hidden_channels = args.hidden_channels
+n_layers = args.n_layers
+epochs = args.epochs
+
+def plot_model(model: FNO, params: Tensor, u_mean: Tensor, u_std: Tensor):
+    import matplotlib.pyplot as plt
+
+    u_pred_normalized = model(params.unsqueeze(0))
+    u_pred_normalized = u_pred_normalized.squeeze(0).squeeze(0).detach().cpu()
+
+    u_pred_denormalized = u_pred_normalized * u_std + u_mean
+    u_pred_denormalized = u_pred_denormalized.numpy()
+
+    plt.figure(figsize=(10, 5))
+    plt.clf()
+    plt.imshow(u_pred_denormalized, aspect='auto', cmap='hot')
+    plt.colorbar()
+    plt.title("Model Output (Denormalized)")
+    plt.xlabel("Spatial Points")
+    plt.ylabel("Time Steps")
+    plt.savefig("model_output.png", dpi=180)
+    plt.show()
+
+if __name__ == "__main__":
+    train_dataset = Dataset()
+    train_dataset.load("data/train")
+
+    test_dataset = Dataset()
+    test_dataset.load("data/test")
+
+    
+    all_a_tensors = torch.stack([params for params, u in train_dataset.elements])
+    all_u_tensors = torch.stack([u for params, u in train_dataset.elements])
+
+    a_mean = all_a_tensors.mean(dim=(0, 2, 3), keepdim=True).squeeze(0)
+    a_std = all_a_tensors.std(dim=(0, 2, 3), keepdim=True).squeeze(0)
+    a_std[a_std == 0] = 1e-8
+
+    u_mean = all_u_tensors.mean()
+    u_std = all_u_tensors.std()
+
+    train_dataset.elements = [
+        ((params - a_mean) / a_std, (u - u_mean) / u_std)
+        for params, u in train_dataset.elements
+    ]
+
+    test_dataset.elements = [
+        ((params - a_mean) / a_std, (u - u_mean) / u_std)
+        for params, u in test_dataset.elements
+    ]
+
+    model = FNO(n_modes=(n_modes,n_modes),
+                hidden_channels=hidden_channels,
+                in_channels=3,
+                out_channels=1,
+                n_layers=n_layers
+    )
+
+    train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=10, shuffle=True)
+    test_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=10, shuffle=False)
+
+
+    optimizer = torch.optim.AdamW(
+        model.parameters(),
+        lr=1e-2,
+        #betas=(0.9, 0.999),
+        #eps=1e-8,
+        weight_decay=1e-4         # décorrélé grâce à AdamW
+    )
+
+    train_losses, test_losses, times = train(model=model,
+        dataloader=train_dataloader,
+        optimizer=optimizer,
+        epochs=epochs,
+        device=device,
+        test_loader=test_dataloader
+    )
+
+    to_save = {
+        "train_losses": train_losses,
+        "test_losses": test_losses,
+        "times": times,
+    }
+
+    save_result(f"out/fno2d/results_{n_modes}_{hidden_channels}_{n_layers}_{epochs}.json", to_save)
+
+
+--- END FILE: ./fno2d/main.py ---
+--- START FILE: ./fno2d/params_generator.py ---
+import itertools
+import os
+
+
+params_path = "fno2d/params"
+
+n_layers = [4, 8, 16]
+hidden_channels = [32, 64, 128]
+n_modes = [64, 128, 256]
+epochs = 500
+
+if os.path.exists(params_path):
+    os.remove(params_path)
+
+with open(params_path, "a") as f:
+    for _ in range(10):
+        for nl, hc, nm in itertools.product(n_layers, hidden_channels, n_modes):
+            f.write(f"-l {nl} -c {hc} -m {nm} -e {epochs}\n")
+
+--- END FILE: ./fno2d/params_generator.py ---
+--- START FILE: ./fno2d/run.sh ---
+#!/bin/bash
+#SBATCH --array=1-270%5
+#SBATCH --job-name=fno2d
+#SBATCH --nodes=1                # nombre de noeuds
+#SBATCH --ntasks=1               # nombre total de tâches sur tous les nœuds
+#SBATCH --cpus-per-task=1
+#SBATCH --time=48:00:00
+#SBATCH --mem=4G
+#SBATCH --output=hs_slurm/dcv_hist/out/slurm-%A_%a.txt
+#SBATCH --error=hs_slurm/dcv_hist/err/slurm-%A_%a.txt
+#SBATCH --mail-type=ALL
+#SBATCH --requeue
+#SBATCH --gres=gpu:1
+
+# export TMPDIR=/scratch/<project>/tmp
+
+DIR=$1
+PARAMS_OFFSET=$2
+
+PARAMS_FILE="${DIR}/params"
+RUNLOG_FILE="${DIR}/runlog"
+BATCH_HIST="batch.txt"
+
+if [ -z "$PARAMS_OFFSET" ]
+then
+    PARAMS_OFFSET=0
+fi
+
+if [ ! -d "$DIR" -o ! -f "$PARAMS_FILE" ]
+then
+    echo "Usage: $0 DIR [PARAMS_OFFSET]"
+    echo "where DIR is a directory containing a file 'params' with the parameters."
+    exit 1
+fi
+
+PARAMS_ID=$(( $SLURM_ARRAY_TASK_ID + $PARAMS_OFFSET ))
+JOB_NAME="${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}"
+
+echo "$PARAMS_ID|$JOB_NAME|$SLURM_SUBMIT_DIR" >> $RUNLOG_FILE
+
+PARAMS=$(tail -n +${PARAMS_ID} ${PARAMS_FILE} | head -n 1)
+
+CMD=$"srun python -m fno2d.main ${PARAMS}"
+
+echo "start"
+ml python/3.12
+ml cuda/12.4
+echo "$PARAMS"
+source ../env/bin/activate 
+export PYTHONPATH=$PWD 
+echo "$PARAMS_ID|$JOB_NAME|$SLURM_SUBMIT_DIR|$CMD" >> $BATCH_HIST
+$CMD
+deactivate
+echo "end"
+--- END FILE: ./fno2d/run.sh ---
+--- START FILE: ./fno2d/train.py ---
+import torch
+import time
+
+
+def accuracy(model: torch.nn.Module,
+            dataloader: torch.utils.data.DataLoader,
+            device: torch.device) -> float:
+
+    model.eval()
+
+    total_error: float = 0.0
+
+    with torch.no_grad():
+        for a, u in dataloader:
+            a, u = a.to(device), u.to(device)
+
+            u_pred = model(a).squeeze(1)  # Assuming model outputs shape (batch_size, 1, Nt, Nr)
+            error: torch.Tensor = torch.nn.functional.mse_loss(u, u_pred)
+            total_error += error.item()
+
+    return total_error / len(dataloader)
+
+
+
+def train_one_epoch(model: torch.nn.Module, 
+                    dataloader: torch.utils.data.DataLoader, 
+                    optimizer: torch.optim.Optimizer, 
+                    device: torch.device) -> float:
+    
+    model.train()
+
+    total_loss: float = 0.0
+
+    for a, u in dataloader:
+        a, u = a.to(device), u.to(device)
+
+        optimizer.zero_grad()
+
+        u_pred = model(a).squeeze(1)  # Assuming model outputs shape (batch_size, 1, Nt, Nr)
+        
+        loss: torch.Tensor = torch.nn.functional.mse_loss(u, u_pred)        
+        loss.backward()
+        optimizer.step()
+
+        total_loss += loss.item()
+
+    
+    total_loss = total_loss / len(dataloader)
+
+    return total_loss
+
+
+def train(model: torch.nn.Module, 
+          dataloader: torch.utils.data.DataLoader, 
+          optimizer: torch.optim.Optimizer, 
+          epochs: int, 
+          device: torch.device,
+          test_loader: torch.utils.data.DataLoader | None) -> tuple[list[float], list[float], list[float]]:
+
+    model.to(device)
+
+    
+    
+
+    train_losses: list[float] = []
+    times: list[float] = []
+    test_losses: list[float] = []
+
+    for epoch in range(epochs):
+        t0: float = time.time()
+        loss: float = train_one_epoch(model, dataloader, optimizer, device)
+        t1: float = time.time()
+        train_losses.append(loss)
+        times.append(t1 - t0)
+
+        if test_loader is not None:
+            test_loss: float = accuracy(model, test_loader, device)
+            test_losses.append(test_loss)
+            print(f"Epoch {epoch + 1}/{epochs}, Loss: {loss:.4f}, Test Loss: {test_loss:.4f}, Time: {t1 - t0:.2f}s")
+        else:
+
+            print(f"Epoch {epoch + 1}/{epochs}, Loss: {loss:.4f}, Time: {t1 - t0:.2f}s")
+
+    return train_losses, test_losses, times
+
+--- END FILE: ./fno2d/train.py ---
+--- START FILE: ./fno2d/dataset.py ---
+import torch
+from torch import Tensor
+import matplotlib.pyplot as plt
+import os
+import json
+
+class Dataset(torch.utils.data.Dataset):
+    def __init__(self):
+        super().__init__()
+        self.elements: list[tuple[Tensor, Tensor]] = []
+
+    def add_element(self, data_dict: dict[str, Tensor | float | int]):
+        P = data_dict["P"]
+        # Make P spatially periodic
+        P_spatial_periodic = torch.cat((torch.flip(P, dims=(-1,)), P), dim=-1)
+        # Make P also temporally periodic
+        P_periodic = torch.cat((torch.flip(P_spatial_periodic, dims=(0,)), P_spatial_periodic), dim=0)
+
+
+        Nr: int = data_dict["Nr"]
+        Nt: int = data_dict["Nt"]
+        R: float = data_dict["R"]
+        cuve_width: float = data_dict["cuve_width"]
+        C_ball: float = data_dict["C_ball"]
+        D_ball: float = data_dict["D_ball"]
+        T_re_ball: float = data_dict["Tre_ball"]
+        C_cuve: float = data_dict["C_cuve"]
+        D_cuve: float = data_dict["D_cuve"]
+        T_re_cuve: float = data_dict["Tre_cuve"]
+
+        num_spatial_points = Nr + 1
+        
+        params = torch.zeros(Nt, num_spatial_points, 3)
+
+        n_ball_points = int(num_spatial_points * R / cuve_width)
+
+        params[:, :n_ball_points, 0] = C_ball
+        params[:, :n_ball_points, 1] = D_ball
+        params[:, :n_ball_points, 2] = T_re_ball
+
+        params[:, n_ball_points:, 0] = C_cuve
+        params[:, n_ball_points:, 1] = D_cuve
+        params[:, n_ball_points:, 2] = T_re_cuve
+        
+        # Make params spatially periodic
+        params_spatial_periodic = torch.cat((torch.flip(params, dims=(1,)), params), dim=1)
+        # Make params also temporally periodic
+        params_periodic = torch.cat((torch.flip(params_spatial_periodic, dims=(0,)), params_spatial_periodic), dim=0)
+
+        self.elements.append((params_periodic.permute(2, 0, 1), P_periodic))   
+
+    def __len__(self):
+        return len(self.elements)
+
+    def __getitem__(self, idx: int):
+        return self.elements[idx]
+    
+    def plot_element(self, idx: int):
+        if idx >= len(self.elements):
+            print(f"Error: Index {idx} is out of bounds for dataset of size {len(self.elements)}.")
+            return
+
+        params, P = self.__getitem__(idx)
+        
+        params_np = params.cpu().numpy()
+        P_np = P.cpu().numpy()
+
+        fig, axs = plt.subplots(2, 2, figsize=(15, 10))
+        fig.suptitle(f"Visualisation de l'élément {idx} du Dataset", fontsize=16)
+
+        titles = ["Paramètre C (Input)", "Paramètre D (Input)", "Paramètre T_re (Input)", "Solution P (Target)"]
+        data_to_plot = [params_np[0, :, :], params_np[1, :, :], params_np[2, :, :], P_np]
+        
+        for i, ax in enumerate(axs.flat):
+            im = ax.imshow(data_to_plot[i], origin='lower', aspect='auto', cmap='viridis')
+            ax.set_title(titles[i])
+            ax.set_xlabel("Coordonnée Spatiale Périodique")
+            ax.set_ylabel("Pas de Temps")
+            fig.colorbar(im, ax=ax)
+
+        plt.tight_layout(rect=[0, 0, 1, 0.96])
+        plt.savefig(f"element_{idx}_visualization.png")
+        plt.show()
+
+
+
+    def load(self, file_path: str):
+        for json_file in os.listdir(file_path):
+            if json_file.endswith(".json"):
+                with open(os.path.join(file_path, json_file), "r") as f:
+                    data = json.load(f)
+                
+                    data["P"] = torch.tensor(data["P"])
+
+                    self.add_element(data)
+--- END FILE: ./fno2d/dataset.py ---
+--- START FILE: ./data/create.py ---
+
+import itertools
+from data.data_generator import DataGenerator
+
+import json
+import os
+
+import random
+import numpy as np
+
+C_jus = [11, 110]
+C_cristal = [58, 20, 90 ]
+T1_cristal = [40, 300]
+R_sphere = [25, 50, 75, 250, 500, 750, 2500, 5000]
+
+
+
+
+
+def extract_params_from_brut(folder: str):
+    list_params: list[dict] = []
+    for sub_folder in os.listdir(folder):
+
+        if not os.path.isdir(os.path.join(folder, sub_folder)):
+            continue
+
+        try:
+            C_cuve, C_ball, T1_ball, R_nm = map(float, sub_folder.split('_'))
+        except ValueError:
+            print(f"Skipping folder {sub_folder} due to ValueError")
+            continue
+
+
+        for file in os.listdir(os.path.join(folder, sub_folder)):
+
+            P0, TB, Time, P = np.loadtxt(
+                os.path.join(folder, sub_folder, file),
+                comments='%',          # saute toutes les lignes qui commencent par %
+                unpack=True            # renvoie 4 tableaux séparés
+            )
+
+            P0 = float(P0[0])
+            TB = float(TB[0])
+
+
+            D_ref = 500          # nm^2/s
+            C_ref = 60           # mol/L
+            D_ball = D_ref * (C_ball / C_ref) ** (1/3)
+            D_cuve = D_ref * (C_cuve / C_ref) ** (1/3)
+
+
+            D_ball = D_ball * 1000
+            D_cuve = D_cuve* 1000
+
+            T1_ball = T1_ball * 10
+            TB = TB * 10
+
+            list_params.append({
+                "C_cuve": C_cuve,
+                "C_ball": C_ball,
+                "D_cuve": D_cuve,
+                "D_ball": D_ball,
+                "T1_cuve": TB,
+                "T1_ball": T1_ball,
+                "P0_cuve": P0,
+                "P0_ball": 1.,
+                "R": R_nm, # NM !!!!
+                #"TB": TB
+            })
+
+    return list_params
+
+
+
+
+def empty_database(folder: str):
+    if os.path.exists(folder):
+        for sub_folder in ["train", "test", "plot"]:
+            sub_folder_path = os.path.join(folder, sub_folder)
+            if os.path.exists(sub_folder_path):
+                for file in os.listdir(sub_folder_path):
+                    os.remove(os.path.join(sub_folder_path, file))
+            else:
+                os.makedirs(sub_folder_path)
+    else:
+        os.makedirs(folder)
+        os.makedirs(os.path.join(folder, "train"))
+        os.makedirs(os.path.join(folder, "test"))
+
+
+def create_database(list_dict: list[dict], folder: str, prop: float = 0.1):
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
+    for params in list_dict:
+        dg = DataGenerator(R=params["R"],
+                        C_cuve=params["C_cuve"],
+                        C_ball=params["C_ball"],
+                        D_cuve=params["D_cuve"],
+                        D_ball=params["D_ball"],
+                        Tre_cuve=params["T1_cuve"],
+                        Tre_ball=params["T1_ball"],
+                        P0_cuve=params["P0_cuve"],
+                        P0_ball=params["P0_ball"],
+                        cuve_width=6_000.,
+                        Tfinal=10.,
+                        Nr=100,
+                        Nt=100)
+
+        print(f"{params=}")
+
+        dg.solve()
+        dg.plot("data/plot")
+
+        data = dg.get()
+
+        data_json = json.dumps(data, default=lambda x: x.tolist(), indent=4)
+
+
+        if random.random() < prop:
+            sub_folder = "test"
+        else:
+            sub_folder = "train"
+
+        with open(os.path.join(folder, sub_folder, f"data_{params['C_cuve']}_{params['C_ball']}_{params['T1_cuve']}_{params['R']}.json"), "w") as f:
+            f.write(data_json)
+
+
+
+
+
+
+
+if __name__ == "__main__":
+    empty_database("data")
+    list_dict = extract_params_from_brut("data/brut")
+    create_database(list_dict, "data", prop=0.1)
+
+
+
+
+
+
+
+
+
+
+
+
+def create_database_():
+    for c_j, c_r, t1_c, r_s in itertools.product(C_jus, C_cristal, T1_cristal, R_sphere):
+        dg = DataGenerator(R=r_s,
+                        C_cuve=c_j,
+                        C_ball=c_r,
+                        D_cuve=1.,
+                        D_ball=0.1,
+                        Tre_cuve=t1_c,
+                        Tre_ball=t1_c,
+                        cuve_width=1.,
+                        Tfinal=1.,
+                        Nr=100,
+                        Nt=100)
+        
+
+        print(f"Dataset size for C_j={c_j}, C_r={c_r}, T1_c={t1_c}, R_sphere={r_s}")
+
+        dg.solve()
+
+        data = dg.get()
+
+
+        data_json = json.dumps(data, default=lambda x: x.tolist(), indent=4)
+
+        if random.random() < 0.1:
+            with open(f"data/test/data_{c_j}_{c_r}_{t1_c}_{r_s}.json", "w") as f:
+                f.write(data_json)
+        else:
+            with open(f"data/train/data_{c_j}_{c_r}_{t1_c}_{r_s}.json", "w") as f:
+                f.write(data_json)
+        
+        #with open(f"data/all/data_{c_j}_{c_r}_{t1_c}_{r_s}.json", "w") as f:
+        #    f.write(data_json)
+        
+
+        # Save the dataset to a file
+
+        
+
+
+--- END FILE: ./data/create.py ---
+--- START FILE: ./data/load.py ---
+import torch
+import json
+import os
+
+def load(file_path: str, dataset):
+    for json_file in os.listdir(file_path):
+        if json_file.endswith(".json"):
+            with open(os.path.join(file_path, json_file), "r") as f:
+                data = json.load(f)
+            
+                data["P"] = torch.tensor(data["P"])
+
+                dataset.add_element(data)
+--- END FILE: ./data/load.py ---
+--- START FILE: ./data/data_generator.py ---
+from mpi4py import MPI
+import numpy as np
+import ufl
+from petsc4py.PETSc import ScalarType
+from dolfinx import mesh, fem, io
+from dolfinx.fem.petsc import LinearProblem
+import matplotlib.pyplot as plt
+
+import torch
+from torch import Tensor
+
+
+from collections.abc import Callable
+
+
+class DataGenerator:
+    def __init__(self,
+                 R: float,
+                 C_cuve: float, C_ball: float,
+                 D_cuve: float, D_ball: float,
+                 Tre_cuve: float, Tre_ball: float,
+                 P0_cuve: float, P0_ball: float,
+                 cuve_width: float = 10.,
+                 Tfinal: float = 10.,
+                 Nr: int = 100,
+                 Nt: int = 100,
+                 ):
+
+        self.R = R
+        self.C: Callable = lambda r: ufl.conditional(ufl.lt(r, self.R), C_ball, C_cuve)
+        self.D: Callable = lambda r: ufl.conditional(ufl.lt(r, self.R), D_ball, D_cuve)
+        self.Tre: Callable = lambda r: ufl.conditional(ufl.lt(r, self.R), Tre_ball, Tre_cuve)
+        self.P0: Callable = lambda r: ufl.conditional(ufl.lt(r, self.R), P0_ball, P0_cuve)
+
+        self.cuve_width = cuve_width
+        self.Tfinal = Tfinal
+        self.Nr = Nr
+        self.Nt = Nt
+        self.dt = self.Tfinal / self.Nt
+
+        self.C_cuve = C_cuve
+        self.C_ball = C_ball
+        self.D_cuve = D_cuve
+        self.D_ball = D_ball
+        self.Tre_cuve = Tre_cuve
+        self.Tre_ball = Tre_ball
+        self.P0_cuve = P0_cuve
+        self.P0_ball = P0_ball
+
+        self.f: Callable[[float], float] = lambda t: 1000.0 if t > 0. else 0.0
+
+        self.mesh = None
+        self.V = None
+        self.P_time = []
+        self.r_sorted = None
+        self.t_vec = None
+
+
+    def solve(self):
+
+        self.mesh = mesh.create_interval(MPI.COMM_WORLD, self.Nr, [0.0, self.cuve_width])
+        self.V = fem.functionspace(self.mesh, ("Lagrange", 1))
+
+        x = ufl.SpatialCoordinate(self.mesh)[0]
+        r = x
+        w = r**2
+
+        C_expr = self.C(r)
+        D_expr = self.D(r)
+        Tre_expr = self.Tre(r)
+        P0_expr = self.P0(r)
+
+        #fem.Constant(self.mesh, ScalarType(0.0))
+
+
+        u, v = ufl.TrialFunction(self.V), ufl.TestFunction(self.V)
+        P_old = fem.Function(self.V, name="P_old")
+        P_old.interpolate(lambda x: np.where(x[0] < self.R, self.P0_ball, self.P0_cuve))
+        # P_old.interpolate(lambda x: np.zeros(x.shape[1]))
+
+        a = ((C_expr * w / self.dt) * u * v
+             + D_expr * C_expr * w * ufl.dot(ufl.grad(u), ufl.grad(v))
+             + (C_expr / Tre_expr) * w * u * v) * ufl.dx
+
+        L = ((C_expr * w / self.dt) * P_old * v
+             + (C_expr / Tre_expr) * w * P0_expr * v) * ufl.dx
+
+
+        def on_wall(x):
+            return np.isclose(x[0], self.cuve_width)
+
+        dofs_wall = fem.locate_dofs_geometrical(self.V, on_wall)
+        P_wall_bc = fem.Function(self.V)
+        bc = fem.dirichletbc(P_wall_bc, dofs_wall)
+
+
+        problem = LinearProblem(
+            a, L, bcs=[bc],
+            petsc_options={"ksp_type": "preonly", "pc_type": "lu"}
+        )
+
+
+        n_owned = self.V.dofmap.index_map.size_local
+        r_local = self.V.tabulate_dof_coordinates()[:n_owned, 0]
+        all_r = self.mesh.comm.gather(r_local, root=0)
+
+        order = None
+        if self.mesh.comm.rank == 0:
+            r_glob = np.concatenate(all_r)
+            order = np.argsort(r_glob)
+            self.r_sorted = r_glob[order] 
+            self.P_time = []
+        
+        t = 0.0
+        with io.XDMFFile(self.mesh.comm, "polarisation_P.xdmf", "w") as xdmf:
+            xdmf.write_mesh(self.mesh)
+
+            for _ in range(self.Nt):
+                t += self.dt
+                
+                P_wall_bc.x.array.fill(self.f(t))
+                P_wall_bc.x.scatter_forward()
+
+
+                P_new = problem.solve()
+                P_new.name = "P"
+                xdmf.write_function(P_new, t)
+
+
+                P_local = P_new.x.array[:n_owned]
+                all_P = self.mesh.comm.gather(P_local, root=0)
+
+                if self.mesh.comm.rank == 0:
+                    P_glob = np.concatenate(all_P)
+                    P_sorted = P_glob[order]
+                    self.P_time.append(P_sorted.copy())
+
+
+                P_old.x.array[:] = P_new.x.array
+        
+        if self.mesh.comm.rank == 0:
+            self.t_vec = np.linspace(self.dt, self.Tfinal, self.Nt)
+
+
+    def plot(self, dir: str = "data/plot"):
+        if self.mesh.comm.rank == 0:
+            if not self.P_time or self.r_sorted is None or self.t_vec is None:
+                print("No data to plot. Please run solve() first.")
+                return
+
+            P_mat = np.array(self.P_time)
+            
+            plt.figure(figsize=(8, 5))
+            plt.imshow(P_mat,
+                       extent=[0.0, self.cuve_width, 0.0, self.Tfinal],
+                       origin="lower",
+                       aspect="auto",
+                       cmap="viridis")
+
+            plt.colorbar(label=r"$P(r,t)$")
+            plt.xlabel(r"$r$ (m)")
+            plt.ylabel(r"$t$ (s)")
+            plt.title("Évolution de la polarisation P(r,t)")
+            plt.tight_layout()
+            plt.savefig(f"{dir}/P_rt_{self.C_cuve}_{self.C_ball}_{self.Tre_cuve}_{self.R}.png", dpi=180)
+            #plt.show()
+
+
+            #plt.figure(figsize=(8, 5))
+            #t_slice = 0.5
+            #if t_slice > self.Tfinal:
+            #    time_index = -1
+            #else:
+            #    time_index = np.argmin(np.abs(self.t_vec - t_slice))
+            #
+            #P_slice = P_mat[time_index, :]
+            #t_val = self.t_vec[time_index]
+#
+            #plt.plot(self.r_sorted, P_slice)
+            #plt.xlabel(r"$r$ (m)")
+            #plt.ylabel(r"$P(r, t)$")
+            #plt.title(f"Tranche de polarisation à t = {t_val:.2f} s")
+            #plt.grid(True)
+            #plt.tight_layout()
+            #plt.savefig(f"P_r_slice_t_{t_slice:.2f}.png", dpi=180)
+            #plt.show()
+
+
+    def get(self):
+        P_tensor = torch.tensor(self.P_time)
+
+        to_send: dict[str, Tensor | float | int] = {
+            "P": P_tensor,
+            "cuve_width": self.cuve_width,
+            "Tfinal": self.Tfinal,
+            "Nr": self.Nr,
+            "Nt": self.Nt,
+            "dt": self.dt,
+            "C_cuve": self.C_cuve,
+            "C_ball": self.C_ball,
+            "D_cuve": self.D_cuve,
+            "D_ball": self.D_ball,
+            "Tre_cuve": self.Tre_cuve,
+            "Tre_ball": self.Tre_ball,
+            "P0_cuve": self.P0_cuve,
+            "P0_ball": self.P0_ball,
+            "R": self.R
+        }
+
+        return to_send
+
+
+
+--- END FILE: ./data/data_generator.py ---
+--- START FILE: ./utils/save.py ---
+from typing import Any, cast
+import json
+import os
+import numpy as np
+
+class NumpyEncoder(json.JSONEncoder):
+    def default(self, o: Any) -> Any:
+        if isinstance(o, np.integer):
+            return int(o)
+        elif isinstance(o, np.floating):
+            return float(o)
+        elif isinstance(o, np.ndarray):
+            return o.tolist()
+        return super().default(o)
+
+# save to format js line
+def save_result(path: str, results: dict[str, Any]):
+    results_str = json.dumps(results, cls=NumpyEncoder)
+    
+    # create directory if it does not exist
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+
+    with open(path, 'a') as f:
+        f.write(results_str + '\n')
+    
+
+
+def load_results(path: str) -> list[dict[str, Any]]:
+    list_results: list[dict[str, Any]] = []
+    with open(path, 'r') as f:
+        for line in f:
+            ljs = json.loads(line)
+
+            if not isinstance(ljs, dict):
+                raise ValueError(f"Invalid line in file: {line}")
+            
+            typed_ljs = cast(dict[str, Any], ljs)
+            list_results.append(typed_ljs)
+    return list_results
+
+
+def save_results(path: str, results: list[dict[str, Any]]):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+
+    with open(path, 'a') as f:
+        for result in results:
+            result_str = json.dumps(result)
+            f.write(result_str + '\n')
+
+
+def conc_files(input_file: str, output_file: str):
+    with open(input_file, 'r') as f_in, open(output_file, 'a') as f_out:
+        for line in f_in:
+            f_out.write(line)
+--- END FILE: ./utils/save.py ---
