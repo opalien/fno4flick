@@ -46,8 +46,8 @@ echo "start"
 ml python/3.12
 ml cuda/12.4
 echo "$PARAMS"
-source ../env/bin/activate # change to your virtual environment
-export PYTHONPATH="/home/thibault.schneeberger/fno4flick/"
+source ../env/bin/activate 
+export PYTHONPATH=$PWD 
 echo "$PARAMS_ID|$JOB_NAME|$SLURM_SUBMIT_DIR|$CMD" >> $BATCH_HIST
 $CMD
 deactivate
