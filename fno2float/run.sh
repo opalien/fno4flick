@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --array=1-270%5
-#SBATCH --job-name=fno2d_invert
+#SBATCH --job-name=fno2float
 #SBATCH --nodes=1                # nombre de noeuds
 #SBATCH --ntasks=1               # nombre total de tâches sur tous les nœuds
 #SBATCH --cpus-per-task=1
@@ -40,7 +40,7 @@ echo "$PARAMS_ID|$JOB_NAME|$SLURM_SUBMIT_DIR" >> $RUNLOG_FILE
 
 PARAMS=$(tail -n +${PARAMS_ID} ${PARAMS_FILE} | head -n 1)
 
-CMD=$"srun python -m fno2d.main ${PARAMS}"
+CMD=$"srun python -m fno2float.main ${PARAMS}"
 
 echo "start"
 ml python/3.12

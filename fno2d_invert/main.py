@@ -76,6 +76,9 @@ def plot_model(model: FNO, u: Tensor, a_mean: Tensor, a_std: Tensor):
 
 
 if __name__ == "__main__":
+
+    print("ICI C'EST INVERT !!")
+
     train_dataset = Dataset()
     train_dataset.load("data/train")
 

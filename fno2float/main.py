@@ -30,6 +30,8 @@ args = parser.parse_args()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Using", device)
 
+print("ici c'est fno2float !")
+
 # -------- charge datasets -------------------------------------------------------------
 train_ds = Dataset()
 train_ds.load(args.train_dir)
