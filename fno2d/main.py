@@ -107,5 +107,5 @@ if __name__ == "__main__":
         "times": times,
     }
 
-    save_result(f"results_{n_modes}_{hidden_channels}_{n_layers}_{epochs}.json", to_save)
+    save_result(f"out/fno2d/results_{n_modes}_{hidden_channels}_{n_layers}_{epochs}.json", to_save)
 
