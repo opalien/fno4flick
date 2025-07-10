@@ -129,7 +129,7 @@ def create_database(list_dict: list[dict[Any, Any]], folder: str, n=20, micro_on
         #math.exp(rd.uniform(math.log(R_min), math.log(R_max)))
         dg = DataGenerator(
             R=R,
-            r_max=0.7, #*R,
+            r_max=6*R,
             C_in=rd.uniform(C_in_min, C_in_max),
             C_out=rd.uniform(C_out_min, C_out_max),
             D_in=rd.uniform(D_in_min, D_in_max),
@@ -144,7 +144,7 @@ def create_database(list_dict: list[dict[Any, Any]], folder: str, n=20, micro_on
             tanh_slope=0
         )
         dg.solve()
-        dg.plot("data/plot")
+        dg.plot(os.path.join(folder, "plot"))
         data = dg.get()
 
         if (a:=rd.random()) < test:
@@ -166,6 +166,6 @@ def create_database(list_dict: list[dict[Any, Any]], folder: str, n=20, micro_on
 
         
 if __name__ == "__main__":
-    empty_database("data")
+    #empty_database("data")
     list_dict = extract_params_from_brut("data/brut")
-    create_database(list_dict, "data", test=0.1, dev=0.1, n=1000, micro_ondes=True)
+    create_database(list_dict, "data_R", test=0.1, dev=0.1, n=10_000, micro_ondes=True)
