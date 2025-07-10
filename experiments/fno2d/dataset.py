@@ -85,6 +85,7 @@ class Dataset(torch.utils.data.Dataset[tuple[Params, Tensor]]):
             self.param_std = dataset.param_std
             self.P_mean = dataset.P_mean
             self.P_std = dataset.P_std
+            
         else:
             acc = {"C": 0.0, "D": 0.0, "T1": 0.0}
             acc_sq = {"C": 0.0, "D": 0.0, "T1": 0.0}

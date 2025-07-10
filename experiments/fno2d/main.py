@@ -45,6 +45,12 @@ if __name__ == "__main__":
     train_dataset.normalize()
     test_dataset.normalize(dataset=train_dataset)
 
+    print("Vérif rapide (should ~0,~1)")
+    print("train  P mean/std :", train_dataset[0][1].mean().item(),
+                                train_dataset[0][1].std().item())
+    print("test   P mean/std :",  test_dataset[0][1].mean().item(),
+                                test_dataset[0][1].std().item())
+
     train_dataloader = train_dataset.get_dataloader(64, shuffle=True)
     test_dataloader = test_dataset.get_dataloader(64, shuffle=False)
 
@@ -55,7 +61,7 @@ if __name__ == "__main__":
                 n_layers=n_layers
     ).to(device)
 
-    print(f"Normali")
+    print(f"Normalisation parameters: {train_dataset.param_mean=}, {train_dataset.param_std=}, {train_dataset.P_mean=}, {train_dataset.P_std=}")
 
     print("Accuracy without training : ", accuracy(model, test_dataloader, device))
 
