@@ -40,10 +40,13 @@ if __name__ == "__main__":
     train_dataset.load("data/train")
 
     test_dataset = Dataset()
-    test_dataset.load("data/test")
+    #test_dataset.load("data/test")
 
     train_dataset.normalize()
-    test_dataset.normalize(dataset=train_dataset)
+    #test_dataset.normalize(dataset=train_dataset)
+
+    test_dataset.elements = train_dataset.elements[:len(train_dataset.elements)//10]
+    train_dataset.elements = train_dataset.elements[len(train_dataset.elements)//10:]
 
     print("Vérif rapide (should ~0,~1)")
     print("train  P mean/std :", train_dataset[0][1].mean().item(),
