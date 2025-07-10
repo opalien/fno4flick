@@ -72,56 +72,66 @@ class Dataset(torch.utils.data.Dataset[tuple[Params, Tensor]]):
             if f.endswith(".pt"):
                 self.add_element(torch.load(os.path.join(path, f), weights_only=False))
 
-    def normalize(self, eps: float = 1e-8):
+    def normalize(self, eps: float = 1e-8, 
+                  dataset: "Dataset" | None = None):
         if not self.elements:
             return
 
-        acc = {"C": 0.0, "D": 0.0, "T1": 0.0}
-        acc_sq = {"C": 0.0, "D": 0.0, "T1": 0.0}
-        length_tot = 0.0
-        P_sum = 0.0
-        P_sq = 0.0
-        P_count = 0
+        if dataset:
+            if dataset.param_mean is None or dataset.param_std is None or dataset.P_mean is None or dataset.P_std is None:
+                raise ValueError("The provided dataset for normalization has not been normalized itself.")
+            
+            self.param_mean = dataset.param_mean
+            self.param_std = dataset.param_std
+            self.P_mean = dataset.P_mean
+            self.P_std = dataset.P_std
+        else:
+            acc = {"C": 0.0, "D": 0.0, "T1": 0.0}
+            acc_sq = {"C": 0.0, "D": 0.0, "T1": 0.0}
+            length_tot = 0.0
+            P_sum = 0.0
+            P_sq = 0.0
+            P_count = 0
 
-        for p, P in self.elements:
-            li = p.R
-            lo = p.r_max - p.R
-            L = p.r_max
+            for p, P in self.elements:
+                li = p.R
+                lo = p.r_max - p.R
+                L = p.r_max
 
-            acc["C"] += p.C_in * li + p.C_out * lo
-            acc["D"] += p.D_in * li + p.D_out * lo
-            acc["T1"] += p.T1_in * li + p.T1_out * lo
+                acc["C"] += p.C_in * li + p.C_out * lo
+                acc["D"] += p.D_in * li + p.D_out * lo
+                acc["T1"] += p.T1_in * li + p.T1_out * lo
 
-            acc_sq["C"] += p.C_in ** 2 * li + p.C_out ** 2 * lo
-            acc_sq["D"] += p.D_in ** 2 * li + p.D_out ** 2 * lo
-            acc_sq["T1"] += p.T1_in ** 2 * li + p.T1_out ** 2 * lo
+                acc_sq["C"] += p.C_in ** 2 * li + p.C_out ** 2 * lo
+                acc_sq["D"] += p.D_in ** 2 * li + p.D_out ** 2 * lo
+                acc_sq["T1"] += p.T1_in ** 2 * li + p.T1_out ** 2 * lo
 
-            length_tot += L
+                length_tot += L
 
-            P_sum += P.sum().item()
-            P_sq += (P * P).sum().item()
-            P_count += P.numel()
+                P_sum += P.sum().item()
+                P_sq += (P * P).sum().item()
+                P_count += P.numel()
 
-        mean = {k: acc[k] / length_tot for k in acc}
-        std = {k: math.sqrt(max(acc_sq[k] / length_tot - mean[k] ** 2, eps)) for k in acc}
+            mean = {k: acc[k] / length_tot for k in acc}
+            std = {k: math.sqrt(max(acc_sq[k] / length_tot - mean[k] ** 2, eps)) for k in acc}
 
-        self.param_mean = mean
-        self.param_std = std
+            self.param_mean = mean
+            self.param_std = std
 
-        self.P_mean = P_sum / P_count
-        self.P_std = math.sqrt(max(P_sq / P_count - self.P_mean ** 2, eps))
+            self.P_mean = P_sum / P_count
+            self.P_std = math.sqrt(max(P_sq / P_count - self.P_mean ** 2, eps))
 
         for p, P in self.elements:
             P.sub_(self.P_mean).div_(self.P_std)
 
-            p.C_in = (p.C_in - mean["C"]) / std["C"]
-            p.C_out = (p.C_out - mean["C"]) / std["C"]
+            p.C_in = (p.C_in - self.param_mean["C"]) / self.param_std["C"]
+            p.C_out = (p.C_out - self.param_mean["C"]) / self.param_std["C"]
 
-            p.D_in = (p.D_in - mean["D"]) / std["D"]
-            p.D_out = (p.D_out - mean["D"]) / std["D"]
+            p.D_in = (p.D_in - self.param_mean["D"]) / self.param_std["D"]
+            p.D_out = (p.D_out - self.param_mean["D"]) / self.param_std["D"]
 
-            p.T1_in = (p.T1_in - mean["T1"]) / std["T1"]
-            p.T1_out = (p.T1_out - mean["T1"]) / std["T1"]
+            p.T1_in = (p.T1_in - self.param_mean["T1"]) / self.param_std["T1"]
+            p.T1_out = (p.T1_out - self.param_mean["T1"]) / self.param_std["T1"]
 
     def plot_element(self, idx: int, normalised: bool = True):
         if idx >= len(self.elements):

@@ -43,7 +43,7 @@ if __name__ == "__main__":
     test_dataset.load("data/test")
 
     train_dataset.normalize()
-    test_dataset.normalize()
+    test_dataset.normalize(dataset=train_dataset)
 
     train_dataloader = train_dataset.get_dataloader(64, shuffle=True)
     test_dataloader = test_dataset.get_dataloader(64, shuffle=False)
@@ -54,6 +54,8 @@ if __name__ == "__main__":
                 out_channels=1,
                 n_layers=n_layers
     ).to(device)
+
+    print(f"Normali")
 
     print("Accuracy without training : ", accuracy(model, test_dataloader, device))
 
