@@ -1,11 +1,11 @@
 #!/bin/bash
-#SBATCH --array=1-270%5
+#SBATCH --array=1-270%3
 #SBATCH --job-name=fno2d
 #SBATCH --nodes=1                # nombre de noeuds
 #SBATCH --ntasks=1               # nombre total de tâches sur tous les nœuds
 #SBATCH --cpus-per-task=1
 #SBATCH --time=48:00:00
-#SBATCH --mem=4G
+#SBATCH --mem=16G
 #SBATCH --output=hs_slurm/dcv_hist/out/slurm-%A_%a.txt
 #SBATCH --error=hs_slurm/dcv_hist/err/slurm-%A_%a.txt
 #SBATCH --mail-type=ALL
@@ -40,7 +40,7 @@ echo "$PARAMS_ID|$JOB_NAME|$SLURM_SUBMIT_DIR" >> $RUNLOG_FILE
 
 PARAMS=$(tail -n +${PARAMS_ID} ${PARAMS_FILE} | head -n 1)
 
-CMD=$"srun python -m fno2d_R.main ${PARAMS}"
+CMD=$"srun python -m experiments.fno2d_R.main ${PARAMS}"
 
 echo "start"
 ml python/3.12
