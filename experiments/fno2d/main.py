@@ -9,6 +9,8 @@ from experiments.fno2d.train import train, accuracy
 
 from util.save import save_result
 
+from sklearn.model_selection import train_test_split
+
 
 # n_modes = 32
 # hidden_channels = 64
@@ -45,8 +47,15 @@ if __name__ == "__main__":
     train_dataset.normalize()
     #test_dataset.normalize(dataset=train_dataset)
 
-    test_dataset.elements = train_dataset.elements[:len(train_dataset.elements)//10]
-    train_dataset.elements = train_dataset.elements[len(train_dataset.elements)//10:]
+    train_elems, test_elems = train_test_split(
+        train_dataset.elements,        # liste originale
+        test_size=0.1, random_state=42 # ou stratifié si vous avez des labels
+)
+    train_dataset.elements = train_elems
+    test_dataset.elements  = test_elems
+
+    #test_dataset.elements = train_dataset.elements[:len(train_dataset.elements)//10]
+    #train_dataset.elements = train_dataset.elements[len(train_dataset.elements)//10:]
 
     print("Vérif rapide (should ~0,~1)")
     print("train  P mean/std :", train_dataset[0][1].mean().item(),
@@ -61,7 +70,9 @@ if __name__ == "__main__":
                 hidden_channels=hidden_channels,
                 in_channels=3,
                 out_channels=1,
-                n_layers=n_layers
+                n_layers=n_layers,
+                lift_dropout=0.1, 
+                projection_dropout=0.1
     ).to(device)
 
     print(f"Normalisation parameters: {train_dataset.param_mean=}, {train_dataset.param_std=}, {train_dataset.P_mean=}, {train_dataset.P_std=}")
