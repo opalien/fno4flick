@@ -1,4 +1,4 @@
-from ..fno2d.dataset import Dataset
+from experiments.fno2d.dataset import Dataset
 import torch
 from torch import Tensor
 import argparse

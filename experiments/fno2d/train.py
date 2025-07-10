@@ -3,7 +3,7 @@ import time
 
 from neuralop import LpLoss
 
-lp_loss = LpLoss(d=2, p=2) 
+lp_loss = LpLoss(d=2, p=2, reduction="mean") 
 
 def accuracy(model: torch.nn.Module,
             dataloader: torch.utils.data.DataLoader,
