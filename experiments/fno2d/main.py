@@ -5,7 +5,7 @@ import argparse
 import os
 import time
 from neuralop.models import FNO
-from ..fno2d.train import train
+from experiments.fno2d.train import train
 
 from util.save import save_result
 
