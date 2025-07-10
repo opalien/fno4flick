@@ -63,8 +63,8 @@ if __name__ == "__main__":
     print("test   P mean/std :",  test_dataset[0][1].mean().item(),
                                 test_dataset[0][1].std().item())
 
-    train_dataloader = train_dataset.get_dataloader(256, shuffle=True)
-    test_dataloader = test_dataset.get_dataloader(256, shuffle=False)
+    train_dataloader = train_dataset.get_dataloader(64, shuffle=True)
+    test_dataloader = test_dataset.get_dataloader(64, shuffle=False)
 
     model = FNO(n_modes=(n_modes,n_modes),
                 hidden_channels=hidden_channels,
