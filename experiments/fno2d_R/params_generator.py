@@ -2,7 +2,7 @@ import itertools
 import os
 
 
-params_path = "fno2d_R/params"
+params_path = "experiments/fno2d_R/params"
 
 n_layers = [4, 8, 16]
 hidden_channels = [16, 32, 64]
