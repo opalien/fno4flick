@@ -73,7 +73,7 @@ class Dataset(torch.utils.data.Dataset[tuple[Params, Tensor]]):
                 self.add_element(torch.load(os.path.join(path, f), weights_only=False))
 
     def normalize(self, eps: float = 1e-8, 
-                  dataset: "Dataset" | None = None):
+                  dataset: "Dataset | None" = None):
         if not self.elements:
             return
 
