@@ -53,7 +53,7 @@ if __name__ == "__main__":
                 in_channels=3,
                 out_channels=1,
                 n_layers=n_layers
-    )
+    ).to(device)
 
     print("Accuracy without training : ", accuracy(model, test_dataloader, device))
 
