@@ -1,7 +1,4 @@
-data/brut/*
-data/plot/*
-data/test/*
-data/train/*
+data/*
 
 
 *.pyc

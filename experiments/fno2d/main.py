@@ -1,13 +1,19 @@
-from fno2d.dataset import Dataset
+from ..fno2d.dataset import Dataset
 import torch
 from torch import Tensor
 import argparse
 import os
 import time
 from neuralop.models import FNO
-from fno2d.train import train
+from ..fno2d.train import train
 
-from utils_project.save import save_result
+from util.save import save_result
+
+
+# n_modes = 32
+# hidden_channels = 64
+# n_layers = 8
+
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
@@ -27,24 +33,7 @@ hidden_channels = args.hidden_channels
 n_layers = args.n_layers
 epochs = args.epochs
 
-def plot_model(model: FNO, params: Tensor, u_mean: Tensor, u_std: Tensor):
-    import matplotlib.pyplot as plt
 
-    u_pred_normalized = model(params.unsqueeze(0))
-    u_pred_normalized = u_pred_normalized.squeeze(0).squeeze(0).detach().cpu()
-
-    u_pred_denormalized = u_pred_normalized * u_std + u_mean
-    u_pred_denormalized = u_pred_denormalized.numpy()
-
-    plt.figure(figsize=(10, 5))
-    plt.clf()
-    plt.imshow(u_pred_denormalized, aspect='auto', cmap='hot')
-    plt.colorbar()
-    plt.title("Model Output (Denormalized)")
-    plt.xlabel("Spatial Points")
-    plt.ylabel("Time Steps")
-    plt.savefig("model_output.png", dpi=180)
-    plt.show()
 
 if __name__ == "__main__":
     train_dataset = Dataset()
@@ -53,26 +42,11 @@ if __name__ == "__main__":
     test_dataset = Dataset()
     test_dataset.load("data/test")
 
-    
-    all_a_tensors = torch.stack([params for params, u in train_dataset.elements])
-    all_u_tensors = torch.stack([u for params, u in train_dataset.elements])
+    train_dataset.normalize()
+    test_dataset.normalize()
 
-    a_mean = all_a_tensors.mean(dim=(0, 2, 3), keepdim=True).squeeze(0)
-    a_std = all_a_tensors.std(dim=(0, 2, 3), keepdim=True).squeeze(0)
-    a_std[a_std == 0] = 1e-8
-
-    u_mean = all_u_tensors.mean()
-    u_std = all_u_tensors.std()
-
-    train_dataset.elements = [
-        ((params - a_mean) / a_std, (u - u_mean) / u_std)
-        for params, u in train_dataset.elements
-    ]
-
-    test_dataset.elements = [
-        ((params - a_mean) / a_std, (u - u_mean) / u_std)
-        for params, u in test_dataset.elements
-    ]
+    train_dataloader = train_dataset.get_dataloader(64, shuffle=True)
+    test_dataloader = test_dataset.get_dataloader(64, shuffle=False)
 
     model = FNO(n_modes=(n_modes,n_modes),
                 hidden_channels=hidden_channels,
@@ -81,8 +55,6 @@ if __name__ == "__main__":
                 n_layers=n_layers
     )
 
-    train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=10, shuffle=True)
-    test_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=10, shuffle=False)
 
 
     optimizer = torch.optim.AdamW(
@@ -90,12 +62,17 @@ if __name__ == "__main__":
         lr=1e-2,
         #betas=(0.9, 0.999),
         #eps=1e-8,
-        weight_decay=1e-4         # décorrélé grâce à AdamW
+        weight_decay=1e-4
     )
+
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', patience=10, factor=0.5)
+
+
 
     train_losses, test_losses, times = train(model=model,
         dataloader=train_dataloader,
         optimizer=optimizer,
+        scheduler=scheduler,
         epochs=epochs,
         device=device,
         test_loader=test_dataloader
