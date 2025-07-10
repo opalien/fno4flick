@@ -5,7 +5,7 @@ import argparse
 import os
 import time
 from neuralop.models import FNO
-from experiments.fno2d.train import train
+from experiments.fno2d.train import train, accuracy
 
 from util.save import save_result
 
@@ -54,6 +54,8 @@ if __name__ == "__main__":
                 out_channels=1,
                 n_layers=n_layers
     )
+
+    print("Accuracy without training : ", accuracy(model, test_dataloader, device))
 
 
 
