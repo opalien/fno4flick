@@ -143,7 +143,7 @@ def create_database(list_dict: list[dict[Any, Any]], folder: str, n=20, micro_on
             Nt=100,
             tanh_slope=0
         )
-        dg.solve()
+        dg.solve()C
         dg.plot(os.path.join(folder, "plot"))
         data = dg.get()
 

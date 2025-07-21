@@ -7,6 +7,8 @@ import time
 from neuralop.models import FNO
 from experiments.fno2d.train import train, accuracy
 
+from neuralop.models.
+
 from util.save import save_result
 
 from sklearn.model_selection import train_test_split

@@ -2,6 +2,8 @@ import torch
 import time
 
 from neuralop import LpLoss
+from experiments.fno2d_R.dataset import Dataset
+from experiments.fno2d_R.integrator import compute_G_R_fno
 
 lp_loss = LpLoss(d=2, p=2, reduction="mean") 
 
@@ -23,7 +25,48 @@ def accuracy(model: torch.nn.Module,
             error = lp_loss(u_pred, u)
             total_error += error.item()
 
-    return total_error / len(dataloader)
+    return total_error / len(dataloader), total_error_G / len(dataloader)
+
+
+def G_accuracy(model: torch.nn.Module,
+               dataset: Dataset,
+               device: torch.device) -> float:
+    
+    model.eval()
+    
+    if not dataset.elements:
+        return 0.0
+
+    if dataset.param_mean is None or dataset.param_std is None:
+        raise ValueError("Dataset is not normalized, cannot compute G accuracy.")
+        
+    total_error_G: float = 0.0
+    g_loss = LpLoss(d=1, p=2, reduction="mean")
+
+    r_max = dataset.elements[0][0].r_max
+    R_mean = dataset.param_mean['R']
+    R_std = dataset.param_std['R']
+
+    dataloader = dataset.get_dataloader(bs=16, shuffle=False)
+    
+    with torch.no_grad():
+        for a, u_true in dataloader:
+            a, u_true = a.to(device), u_true.to(device)
+            
+            u_pred = model(a).squeeze(1)
+            
+            for i in range(a.shape[0]):
+                log_R_norm = a[i, 3, 0, 0]
+                log_R = log_R_norm * R_std + R_mean
+                R = math.exp(log_R)
+
+                G_pred = compute_G_R_fno(u_pred[i:i+1], R, r_max)
+                G_true = compute_G_R_fno(u_true[i:i+1], R, r_max)
+
+                total_error_G += g_loss(G_pred, G_true).item()
+    
+    return total_error_G / len(dataset)
+ 
 
 
 

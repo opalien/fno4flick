@@ -54,7 +54,7 @@ if __name__ == "__main__":
     input_directory = "."
     output_file_name = "project" + ".txt"
 
-    exclude = ["converter.py", "project.txt", "node_modules/", ".git/", ".nix", "test/", "train/", "requirement.txt", "pycache", "old", ".json", ".lock", "recup/", "plot", ".png", ".xdmf", "brut", "_old"]
+    exclude = ["converter.py", "project.txt", "node_modules/", ".git/", ".nix", "data/", "train/", "requirement.txt", "pycache", "old", ".json", ".lock", "recup/", "plot", ".png", ".xdmf", "brut", "_old", ".pt", "/params", "fno2d/main.py", "fno2d/dataset.py"]
 
     total_files, copied_files = write_directory_structure_to_file(input_directory, output_file_name, exclude)
 

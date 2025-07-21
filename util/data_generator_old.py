@@ -4,8 +4,12 @@ import ufl
 from petsc4py.PETSc import ScalarType
 from dolfinx import mesh, fem
 from dolfinx.fem.petsc import LinearProblem
+
+
 import torch
 from torch import Tensor
+
+
 from collections.abc import Callable
 import os
 
@@ -45,19 +49,28 @@ class DataGenerator:
             self.D: Callable = lambda r: ufl.conditional(ufl.lt(r, self.R), D_in, D_out)
             self.T1: Callable = lambda r: ufl.conditional(ufl.lt(r, self.R), T1_in, T1_out)
             self.P0: Callable = lambda r: ufl.conditional(ufl.lt(r, self.R), P0_in, P0_out)
+
         else:
-            mid = 0.5 * (C_out + C_in)
-            amp = 0.5 * (C_out - C_in)
-            self.C = lambda r: mid + amp * ufl.tanh((r - self.R) / tanh_slope)
-            mid = 0.5 * (D_out + D_in)
-            amp = 0.5 * (D_out - D_in)
-            self.D = lambda r: mid + amp * ufl.tanh((r - self.R) / tanh_slope)
-            mid = 0.5 * (T1_out + T1_in)
-            amp = 0.5 * (T1_out - T1_in)
-            self.T1 = lambda r: mid + amp * ufl.tanh((r - self.R) / tanh_slope)
-            mid = 0.5 * (P0_out + P0_in)
-            amp = 0.5 * (P0_out - P0_in)
-            self.P0 = lambda r: mid + amp * ufl.tanh((r - self.R) / tanh_slope)
+            mid   = 0.5*(C_out + C_in)
+            amp   = 0.5*(C_out - C_in)
+            self.C  = lambda r: mid + amp * ufl.tanh((r - self.R)/tanh_slope)
+
+            mid   = 0.5*(D_out + D_in)
+            amp   = 0.5*(D_out - D_in)
+            self.D  = lambda r: mid + amp * ufl.tanh((r - self.R)/tanh_slope)
+
+            mid   = 0.5*(T1_out + T1_in)
+            amp   = 0.5*(T1_out - T1_in)
+            self.T1 = lambda r: mid + amp * ufl.tanh((r - self.R)/tanh_slope)
+
+            mid   = 0.5*(P0_out + P0_in)
+            amp   = 0.5*(P0_out - P0_in)
+            self.P0 = lambda r: mid + amp * ufl.tanh((r - self.R)/tanh_slope)
+            #self.C: Callable = lambda r: ufl.tanh((r - self.R) / tanh_slope) * (C_out - C_in) + C_in
+            #self.D: Callable = lambda r: ufl.tanh((r - self.R) / tanh_slope) * (D_out - D_in) + D_in
+            #self.T1: Callable = lambda r: ufl.tanh((r - self.R) / tanh_slope) * (T1_out - T1_in) + T1_in
+            #self.P0: Callable = lambda r: ufl.tanh((r - self.R) / tanh_slope) * (P0_out - P0_in) + P0_in
+
 
         self.msh = None
         self.V = None
@@ -65,67 +78,105 @@ class DataGenerator:
         self.r_sorted = None
         self.t_vec = None
 
+    
     def solve(self):
+
         self.msh = mesh.create_interval(MPI.COMM_WORLD, self.Nr, [0.0, self.r_max])
+
         self.V = fem.functionspace(self.msh, ("Lagrange", 1))
+
         x = ufl.SpatialCoordinate(self.msh)[0]
         r = x
-        w = r**2
+        w = r**2  # Jacobian for spherical coordinates
+
         C_expr = self.C(r)
         D_expr = self.D(r)
         T1_expr = self.T1(r)
         P0_expr = self.P0(r)
-        P_n1 = ufl.TrialFunction(self.V)
-        v = ufl.TestFunction(self.V)
-        P_n = fem.Function(self.V)
-        P_n.x.array[:] = 0.0
+
+        # ----------------------------------------------------------
+        # Variables for the problem
+        # ----------------------------------------------------------
+
+        P_n1 = ufl.TrialFunction(self.V)  # P^{n+1}
+        v = ufl.TestFunction(self.V)  # Test function
+        P_n = fem.Function(self.V)  # P^{n}
+
+        P_n.x.array[:] = 0.0  # Initial condition: P(r, 0) = 0
+
         self.P_time.append(P_n)
         dx = ufl.dx
+
+        # ----------------------------------------------------------
+        # Weak form
+        # ----------------------------------------------------------
+
         mass_lhs = (C_expr / ScalarType(self.dt)) * w * P_n1 * v * dx
         mass_rhs = (C_expr / ScalarType(self.dt)) * w * P_n * v * dx
+
         diff_lhs = D_expr * C_expr * w * ufl.dot(ufl.grad(P_n1), ufl.grad(v)) * dx
+
         react_lhs = (C_expr / T1_expr) * w * P_n1 * v * dx
         react_rhs = (C_expr / T1_expr) * w * P0_expr * v * dx
+
         a_form = mass_lhs + diff_lhs + react_lhs
         L_form = mass_rhs + react_rhs
+
+        # ----------------------------------------------------------
+        # Linear problem setup | Neumann comes from the weak form
+        # ----------------------------------------------------------
+
         problem = LinearProblem(
-            a_form, L_form, [],
+            a_form, L_form, [], 
             petsc_options={"ksp_type": "preonly", "pc_type": "lu"}
         )
+
+
         n_loc = self.V.dofmap.index_map.size_local
         r_loc = self.V.tabulate_dof_coordinates()[:n_loc, 0]
         r_all = self.msh.comm.gather(r_loc, root=0)
+
         if self.msh.comm.rank == 0:
             r_glob = np.concatenate(r_all)
             order = np.argsort(r_glob)
             self.r_sorted = r_glob[order]
             P_hist = []
+
         t = 0.0
         for _ in range(self.Nt):
             t += self.dt
+
             P_new = problem.solve()
+
             P_loc = P_new.x.array[:n_loc]
             P_all = self.msh.comm.gather(P_loc, root=0)
             if self.msh.comm.rank == 0:
                 P_glob = np.concatenate(P_all)
                 P_hist.append(P_glob[order].copy())
+
             P_n.x.array[:] = P_new.x.array
+
         if self.msh.comm.rank == 0:
             self.P_time = np.array(P_hist)
             self.t_vec = np.linspace(self.dt, self.Tfinal, self.Nt)
 
+
     def plot(self, dir: str = "data/plot"):
         if self.msh.comm.rank == 0:
             if self.P_time is None or self.r_sorted is None or self.t_vec is None:
+                print("No data to plot. Please run solve() first.")
                 return
+
             import matplotlib.pyplot as plt
             os.makedirs(dir, exist_ok=True)
+
             plt.figure(figsize=(8, 5))
             plt.imshow(self.P_time,
                        extent=[0.0, self.r_max, 0.0, self.Tfinal],
                        origin="lower",
                        aspect="auto",
                        cmap="viridis")
+
             plt.colorbar(label=r"$P(r,t)$")
             plt.xlabel(r"$r$ (m)")
             plt.ylabel(r"$t$ (s)")
@@ -133,31 +184,14 @@ class DataGenerator:
             plt.tight_layout()
             filename = f"{dir}/{self.R}_{self.C_in}_{self.C_out}_{self.D_in}_{self.D_out}_{self.P0_in}_{self.P0_out}_{self.T1_in}_{self.T1_out}.png"
             plt.savefig(filename, dpi=180)
+            # plt.show()
 
     def get(self) -> dict[str, Tensor | float | int]:
         if self.msh.comm.rank == 0:
             P_tensor = torch.tensor(self.P_time, dtype=torch.float32)
-            r = self.r_sorted
-            idx_cut = np.searchsorted(r, self.R, side='right')
-            G_vals = []
-            for line in self.P_time:
-                r_sub = r[:idx_cut]
-                P_sub = line[:idx_cut]
-                if r_sub[-1] < self.R:
-                    if idx_cut < len(r):
-                        r1, r2 = r[idx_cut - 1], r[idx_cut]
-                        P1, P2 = line[idx_cut - 1], line[idx_cut]
-                        P_R = P1 + (P2 - P1) * (self.R - r1) / (r2 - r1)
-                    else:
-                        P_R = P_sub[-1]
-                    r_sub = np.append(r_sub, self.R)
-                    P_sub = np.append(P_sub, P_R)
-                G = 3.0 / (self.R ** 3) * np.trapz(P_sub * (r_sub ** 2), r_sub)
-                G_vals.append(G)
-            G_tensor = torch.tensor(G_vals, dtype=torch.float32)
+
             to_send: dict[str, Tensor | float | int] = {
                 "P": P_tensor,
-                "G_R": G_tensor,
                 "r_max": self.r_max,
                 "Tfinal": self.Tfinal,
                 "Nr": self.Nr,
@@ -175,3 +209,6 @@ class DataGenerator:
             }
             return to_send
         return {}
+        
+
+
