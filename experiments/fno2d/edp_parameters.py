@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Callable
 import math
 
@@ -26,7 +28,7 @@ class EDPParameters:
                  D_in: float, D_out: float,
                  T1_in: float, T1_out: float,
                  P0_in: float, P0_out: float,
-                 parent: "EDPParameters" | None = None,
+                 parent: EDPParameters | None = None,
                  parenthood_label: str | None = None,
     ):
         self.Nr = Nr
