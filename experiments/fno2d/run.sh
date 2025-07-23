@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --array=1-270%3
+#SBATCH --array=1-7%3
 #SBATCH --job-name=fno2d
 #SBATCH --nodes=1                # nombre de noeuds
 #SBATCH --ntasks=1               # nombre total de tâches sur tous les nœuds
