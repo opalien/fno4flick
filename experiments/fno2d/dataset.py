@@ -118,7 +118,7 @@ class Dataset(torch.utils.data.Dataset[tuple[EDPParameters, Tensor]]):
             
             P: Tensor = self.P_normalizer.normalize(P) # type: ignore
 
-            p = p.normalize(self.C_normalizer.normalize, self.D_normalizer.normalize, self.R_normalizer.normalize, self.T1_normalizer.normalize)
+            p = p.normalize(self.C_normalizer.normalize, self.D_normalizer.normalize, None, self.T1_normalizer.normalize)
 
             #p.C_in, p.C_out = self.C_normalizer.normalize(p.C_in), self.C_normalizer.normalize(p.C_out) # type: ignore
             #p.D_in, p.D_out = self.D_normalizer.normalize(p.D_in), self.D_normalizer.normalize(p.D_out) # type: ignore

@@ -90,7 +90,8 @@ if __name__ == "__main__":
                     projection_dropout=projection_dropout
         )
 
-    model.to(device)
+    model = torch.compile(model).to(device)
+
 
     print(f"Normalisation parameters: {train_dataset.C_normalizer=}, {train_dataset.D_normalizer=}, {train_dataset.T1_normalizer=}")
 
