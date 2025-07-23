@@ -62,6 +62,7 @@ if __name__ == "__main__":
     if model_path:
         checkpoint = torch.load(args.model_path, weights_only=False)
         model = FNO(**checkpoint["parameters"])
+        model = torch.compile(model)
         model.load_state_dict(checkpoint["model_state_dict"])
 
     else:
@@ -75,6 +76,8 @@ if __name__ == "__main__":
                 "n_layers": n_layers,
                 "lift_dropout": lift_dropout,
                 "projection_dropout": projection_dropout,
+                "in_channels": 3,
+                "out_channels": 1,
             },
 
             "model_state_dict": None,
@@ -90,7 +93,9 @@ if __name__ == "__main__":
                     projection_dropout=projection_dropout
         )
 
-    model = torch.compile(model).to(device)
+        model = torch.compile(model)
+
+    model = model.to(device)
 
 
     print(f"Normalisation parameters: {train_dataset.C_normalizer=}, {train_dataset.D_normalizer=}, {train_dataset.T1_normalizer=}")
