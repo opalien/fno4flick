@@ -137,10 +137,10 @@ if __name__ == "__main__":
     print("Accuracy with training : ", accuracy(model, test_dataloader, device))
     
     
-    for i in range(len(test_dataset.elements))[:10]:
+    for i in range(len(test_dataset.elements)):
         plot_search_R(model, test_dataset, i, device, f"test_{name}_{i}", r_max_fixed=r_max_fixed)
 
-    for i in range(len(train_dataset.elements))[:10]:
+    for i in range(len(train_dataset.elements)):
         plot_search_R(model, train_dataset, i, device, f"train_{name}_{i}", r_max_fixed=r_max_fixed)
 
 
