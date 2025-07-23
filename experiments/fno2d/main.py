@@ -30,9 +30,10 @@ parser.add_argument("-p", "--model_path", type=str, default="", help="path to mo
 parser.add_argument("-d", "--dataset_path", type=str, default="data", help="path to dataset")
 parser.add_argument("-n", "--name", type=str, default="fno2d", help="name of the experiment")
 parser.add_argument("-r", "--r_max_fixed", type=bool, default=False, help="if True, r_max is fixed to the true value")
+parser.add_argument("-b", "--batch_size", type=int, default=64, help="batch size")
 args = parser.parse_args()
 n_layers, n_modes, hidden_channels, epochs, model_path, dataset_path, name, r_max_fixed = args.n_layers, args.n_modes, args.hidden_channels, args.epochs, args.model_path, args.dataset_path, args.name, args.r_max_fixed
-
+batch_size = args.batch_size
 
 if __name__ == "__main__":
     dataset = Dataset()
@@ -54,8 +55,8 @@ if __name__ == "__main__":
         random_state=42
     )
 
-    train_dataloader = train_dataset.get_dataloader(64, shuffle=True)
-    test_dataloader = test_dataset.get_dataloader(64, shuffle=False)
+    train_dataloader = train_dataset.get_dataloader(batch_size, shuffle=True)
+    test_dataloader = test_dataset.get_dataloader(batch_size, shuffle=False)
 
 
     if model_path:
