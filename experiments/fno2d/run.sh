@@ -40,7 +40,7 @@ echo "$PARAMS_ID|$JOB_NAME|$SLURM_SUBMIT_DIR" >> $RUNLOG_FILE
 
 PARAMS=$(tail -n +${PARAMS_ID} ${PARAMS_FILE} | head -n 1)
 
-CMD=$"srun python -m fno2d.main ${PARAMS}"
+CMD=$"srun python -m experiments.fno2d.main ${PARAMS}"
 
 echo "start"
 ml python/3.12
