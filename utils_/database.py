@@ -1,6 +1,6 @@
 import os
-from util.data_generator import DataGenerator
-from util.convert import C_converter, R_converter, D_converter
+from utils_.data_generator import DataGenerator
+from utils_.convert import C_converter, R_converter, D_converter
 
 from typing import Any
 import random as rd
@@ -124,12 +124,18 @@ def create_database(list_dict: list[dict[Any, Any]], folder: str, n=20, micro_on
 
 
     for _ in range(n):
-        R =  rd.uniform(0.001, 0.5) 
+        #R =  rd.uniform(0.001, 0.5) 
+        #r_max = math.exp(rd.uniform(math.log(R_min), math.log(R_max)*5))
+        #R = rd.uniform(r_max*0.05, r_max*0.9)
         #rd.uniform(R_min, R_max)
         #math.exp(rd.uniform(math.log(R_min), math.log(R_max)))
+
+        R = math.exp(rd.uniform(math.log(R_min), math.log(R_max)))
+        r_max = rd.uniform(R*1.5, R*10.)
+
         dg = DataGenerator(
             R=R,
-            r_max=6*R,
+            r_max=r_max,
             C_in=rd.uniform(C_in_min, C_in_max),
             C_out=rd.uniform(C_out_min, C_out_max),
             D_in=rd.uniform(D_in_min, D_in_max),
@@ -158,6 +164,7 @@ def create_database(list_dict: list[dict[Any, Any]], folder: str, n=20, micro_on
         torch.save(data, file_path)
 
         data["P"] = []
+        data["G_R"] = []
         print(f"{data=}")
         
 
@@ -166,6 +173,6 @@ def create_database(list_dict: list[dict[Any, Any]], folder: str, n=20, micro_on
 
         
 if __name__ == "__main__":
-    #empty_database("data")
+    empty_database("data")
     list_dict = extract_params_from_brut("data/brut")
-    create_database(list_dict, "data_R", test=0.1, dev=0.1, n=10_000, micro_ondes=True)
+    create_database(list_dict, "data", test=0.1, dev=0.1, n=10_000, micro_ondes=True)

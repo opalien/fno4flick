@@ -1,8 +1,11 @@
 data/*
 data_R/*
-
 *.pyc
 */__pycache__/*
 *.h5
 *.xdmf
 *.txt
+*.png
+*.pth
+project.txt
+*_old.py

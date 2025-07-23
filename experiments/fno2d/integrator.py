@@ -40,6 +40,7 @@ def compute_G(P_fno: Tensor, params: EDPParameters) -> Tensor:
 
 
 
+
 def plot_search_R(model: FNO,
                   dataset: Dataset,
                   i: int,
@@ -52,36 +53,39 @@ def plot_search_R(model: FNO,
         model.to(device)
 
         params_true, P_true = dataset.elements[i]
+        params_original = params_true.get_root_parent()
 
         params_tensored, P_tensored = collate_fn([dataset.elements[i]])
-        P_tensored = P_tensored.to(device)
+        P_tensored = P_tensored.squeeze(1).to(device)
 
         G_true = compute_G(P_tensored, params_true)
 
+        params_guess = deepcopy(params_original)
 
-
-        params_guess = deepcopy(params_true)
-
-        linespace = torch.linspace(0.5 * params_true.R, 1.5 * params_true.R, 10, device=device)
-        errors = []
+        linespace = torch.linspace(0.5 * params_original.R, 1.5 * params_original.R, 10, device=device)
+        errors: list[float] = []
 
         for R in linespace:
             params_guess.R = R.item()
-            if not r_max_fixed:
-                params_guess.r_max = params_true.r_max * R.item() / params_true.R
 
-            params_tensored, _ = collate_fn([(params_guess, P_true)])
+            params = params_guess.rescaling().nondimensionalize().compression().normalize(
+                dataset.C_normalizer.normalize, 
+                dataset.D_normalizer.normalize, 
+                dataset.R_normalizer.normalize,
+                dataset.T1_normalizer.normalize
+            )
 
-            P_pred = model(params_tensored)
-            G_pred = compute_G(P_pred, params_guess)
+            params_tensored, _ = collate_fn([(params, P_true)])
+
+            P_pred = model(params_tensored).squeeze(1)
+            G_pred = compute_G(P_pred, params)
 
             errors.append(torch.norm(G_pred - G_true).cpu().item())
 
-        
-        plt.plot(linespace.cpu().numpy(), errors, label=f'{name} - {i}')
-        plt.axvline(x=params_true.R, color='r', linestyle='--', label=f'True R = {params_true.R:.4f}')
+
+        plt.plot(linespace.cpu().numpy(), errors, label=f'{name} - {i}')        
+        plt.axvline(x=params_original.R, color='r', linestyle='--', label=f'True R = {params_original.R:.4f}')
         plt.legend()
         plt.savefig(f"out/plots/{name}.png")
-        plt.xlabel("R")
-        plt.ylabel("norm(G_pred - G_true)")
         plt.close()
+

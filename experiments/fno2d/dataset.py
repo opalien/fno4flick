@@ -96,6 +96,8 @@ class Dataset(torch.utils.data.Dataset[tuple[EDPParameters, Tensor]]):
                 P_sq  += (P*P).sum().item()
                 P_count += P.numel()
 
+            
+
             self.C_normalizer.mean = acc["C"]  / len(self.elements)
             self.D_normalizer.mean = acc["D"]  / len(self.elements)
             self.T1_normalizer.mean = acc["T1"] / len(self.elements)
@@ -112,30 +114,39 @@ class Dataset(torch.utils.data.Dataset[tuple[EDPParameters, Tensor]]):
             self.P_normalizer.std = math.sqrt(max(P_sq / P_count - self.P_normalizer.mean**2, 1e-8))
 
 
-        for p, P in self.elements:
-            P = self.P_normalizer.normalize(P) # type: ignore
+        for i, (p, P) in enumerate(self.elements):
+            
+            P: Tensor = self.P_normalizer.normalize(P) # type: ignore
 
-            p.C_in, p.C_out = self.C_normalizer.normalize(p.C_in), self.C_normalizer.normalize(p.C_out) # type: ignore
-            p.D_in, p.D_out = self.D_normalizer.normalize(p.D_in), self.D_normalizer.normalize(p.D_out) # type: ignore
-            p.T1_in, p.T1_out = self.T1_normalizer.normalize(p.T1_in), self.T1_normalizer.normalize(p.T1_out) # type: ignore
-            p.P0_in, p.P0_out = self.P0_normalizer.normalize(p.P0_in), self.P0_normalizer.normalize(p.P0_out) # type: ignore
+            p = p.normalize(self.C_normalizer.normalize, self.D_normalizer.normalize, self.R_normalizer.normalize, self.T1_normalizer.normalize)
 
-            p.R = self.R_normalizer.normalize(p.R) # type: ignore
+            #p.C_in, p.C_out = self.C_normalizer.normalize(p.C_in), self.C_normalizer.normalize(p.C_out) # type: ignore
+            #p.D_in, p.D_out = self.D_normalizer.normalize(p.D_in), self.D_normalizer.normalize(p.D_out) # type: ignore
+            #p.T1_in, p.T1_out = self.T1_normalizer.normalize(p.T1_in), self.T1_normalizer.normalize(p.T1_out) # type: ignore
+            #p.P0_in, p.P0_out = self.P0_normalizer.normalize(p.P0_in), self.P0_normalizer.normalize(p.P0_out) # type: ignore
+#
+            #p.R = self.R_normalizer.normalize(p.R) # type: ignore
+
+            self.elements[i] = (p, P)
+
 
 
     def rescale(self):
-        for p, _ in self.elements:
+        for i, (p, P) in enumerate(self.elements):
             p = p.rescaling()
+            self.elements[i] = (p, P)
 
 
     def nondimensionalize(self):
-        for p, _ in self.elements:
+        for i, (p, P) in enumerate(self.elements):
             p = p.nondimensionalize()
+            self.elements[i] = (p, P)
 
 
     def compress(self):
-        for p, _ in self.elements:
+        for i, (p, P) in enumerate(self.elements):
             p = p.compression()
+            self.elements[i] = (p, P)
       
 
     def plot_element(self, idx:int, normalised:bool=True):

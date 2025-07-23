@@ -10,7 +10,7 @@ from neuralop.models import FNO
 
 from experiments.fno2d.dataset import Dataset
 from experiments.fno2d.integrator import plot_search_R
-from experiments.fno2d.train import accuracy, G_accuracy, train
+from experiments.fno2d.train import accuracy, train
 
 
 
@@ -94,8 +94,7 @@ if __name__ == "__main__":
     print(f"Normalisation parameters: {train_dataset.C_normalizer=}, {train_dataset.D_normalizer=}, {train_dataset.T1_normalizer=}")
 
     print("Accuracy without training : ", accuracy(model, test_dataloader, device))
-    #print("G accuracy without training : ", G_accuracy(model, test_dataloader, device))
-
+    
 
     optimizer = torch.optim.AdamW(
         model.parameters(),
@@ -129,8 +128,8 @@ if __name__ == "__main__":
 
 
     print("Accuracy with training : ", accuracy(model, test_dataloader, device))
-    #print("G accuracy with training : ", G_accuracy:=G_accuracy(model, test_dataloader, device))
-
+    
+    
     for i in range(len(test_dataset.elements))[:10]:
         plot_search_R(model, test_dataset, i, device, f"test_{name}_{i}", r_max_fixed=r_max_fixed)
 

@@ -98,13 +98,13 @@ class EDPParameters:
 
     def compression(self) -> "EDPParameters":
         def C_compress(C: float) -> float:
-            return math.log(C)
+            return C #math.log(C + 1)
         
         def D_compress(D: float) -> float:
-            return math.log(D)
+            return math.log(D + 1)
         
         def R_compress(R: float) -> float:
-            return math.log(R)
+            return R #math.log(R + 1)
         
 
         return EDPParameters(
@@ -143,7 +143,14 @@ class EDPParameters:
             parenthood_label="normalize"
         )
 
+    def get_root_parent(self) -> EDPParameters:
+        if self.parent is None:
+            return self
+        return self.parent.get_root_parent()
+
     
+    def __str__(self):
+        return f"EDPParameters(R={self.R}, r_max={self.r_max}, t_max={self.t_max}, C_in={self.C_in}, C_out={self.C_out}, D_in={self.D_in}, D_out={self.D_out}, T1_in={self.T1_in}, T1_out={self.T1_out}, P0_in={self.P0_in}, P0_out={self.P0_out}, parenthood_label={self.parenthood_label}, parent={self.parent})"
 
 if __name__ == "__main__":
     params = EDPParameters(

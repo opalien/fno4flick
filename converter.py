@@ -73,7 +73,10 @@ if __name__ == "__main__":
         "brut", 
         "_old", 
         ".pt", 
-        "/params"
+        "/params",
+        "_old",
+        "out/",
+        
     ]
 
     total_files, copied_files = write_directory_structure_to_file(input_directory, output_file_name, exclude)
