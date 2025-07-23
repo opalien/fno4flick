@@ -77,7 +77,7 @@ def plot_search_R(model: FNO,
 
             params_tensored, _ = collate_fn([(params, P_true)])
 
-            P_pred = model(params_tensored).squeeze(1)
+            P_pred = model(params_tensored.to(device)).squeeze(1)
             G_pred = compute_G(P_pred, params)
 
             errors.append(torch.norm(G_pred - G_true).cpu().item())
