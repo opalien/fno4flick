@@ -63,7 +63,7 @@ if __name__ == "__main__":
         checkpoint = torch.load(args.model_path, weights_only=False)
         model = FNO(**checkpoint["parameters"])
         model = torch.compile(model)
-        model.load_state_dict(checkpoint["model_state_dict"])
+        model.load_state_dict(checkpoint["model_state_dict"], strict=False)
 
     else:
         lift_dropout = 0.0
