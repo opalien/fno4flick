@@ -60,7 +60,7 @@ if __name__ == "__main__":
 
 
     if model_path:
-        checkpoint = torch.load(args.model_path)
+        checkpoint = torch.load(args.model_path, weights_only=False)
         model = FNO(**checkpoint["parameters"])
         model.load_state_dict(checkpoint["model_state_dict"])
 
