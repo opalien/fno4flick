@@ -14,5 +14,5 @@ if os.path.exists(params_path):
 
 with open(params_path, "a") as f:
     for _ in range(1):
-        for nl, hc, nm, bs in [[2, 64, 64, 32], [4, 64, 64, 16], [4, 16, 16, 64], [4, 32, 32, 32], [4, 128, 32, 16], [2, 128, 128, 16]]: #itertools.product(n_layers, hidden_channels, n_modes):
+        for nl, hc, nm, bs in [[2, 64, 64, 16], [4, 64, 64, 16], [4, 16, 16, 16], [4, 32, 32, 16], [4, 128, 32, 16], [2, 128, 128, 16]]: #itertools.product(n_layers, hidden_channels, n_modes):
             f.write(f"-l {nl} -m {nm} -c {hc} -e {epochs} -d data/ -n fno2d_nl_{nl}_hc_{hc}_nm_{nm} -b {bs} \n")
