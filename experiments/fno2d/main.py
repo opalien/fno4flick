@@ -39,9 +39,9 @@ if __name__ == "__main__":
     dataset = Dataset()
     dataset.load(dataset_path)
 
-    #dataset.rescale()
-    #dataset.nondimensionalize()
-    #dataset.compress()
+    dataset.rescale()
+    dataset.nondimensionalize()
+    dataset.compress()
     dataset.normalize()
 
     train_dataset, test_dataset = Dataset(), Dataset()

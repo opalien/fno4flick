@@ -80,17 +80,22 @@ class Dataset(torch.utils.data.Dataset[tuple[EDPParameters, Tensor]]):
             for p, P in self.elements:
                 li, lo = p.R, p.r_max - p.R
 
+                acc_C_avg = p.C_in * li + p.C_out * lo
+                acc_D_avg = p.D_in * li + p.D_out * lo
+                acc_T1_avg = p.T1_in * li + p.T1_out * lo
+                acc_P0_avg = p.P0_in * li + p.P0_out * lo
+
                 acc["R"] += p.R
-                acc["C"]  += p.C_in * li + p.C_out * lo
-                acc["D"]  += p.D_in * li + p.D_out * lo
-                acc["T1"] += p.T1_in * li + p.T1_out * lo
-                acc["P0"] += p.P0_in * li + p.P0_out * lo
+                acc["C"]  += acc_C_avg
+                acc["D"]  += acc_D_avg
+                acc["T1"] += acc_T1_avg
+                acc["P0"] += acc_P0_avg
 
                 acc_sq["R"] += p.R**2
-                acc_sq["C"]  += p.C_in**2  * li + p.C_out**2  * lo
-                acc_sq["D"]  += p.D_in**2  * li + p.D_out**2  * lo
-                acc_sq["T1"] += p.T1_in**2 * li + p.T1_out**2 * lo
-                acc_sq["P0"] += p.P0_in**2 * li + p.P0_out**2 * lo
+                acc_sq["C"]  += acc_C_avg**2
+                acc_sq["D"]  += acc_D_avg**2
+                acc_sq["T1"] += acc_T1_avg**2
+                acc_sq["P0"] += acc_P0_avg**2
 
                 P_sum += P.sum().item()
                 P_sq  += (P*P).sum().item()

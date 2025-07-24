@@ -101,7 +101,7 @@ class EDPParameters:
             return C #math.log(C + 1)
         
         def D_compress(D: float) -> float:
-            return math.log(D + 1)
+            return math.log(D)
         
         def R_compress(R: float) -> float:
             return R #math.log(R + 1)
