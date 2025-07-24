@@ -122,6 +122,8 @@ def create_database(list_dict: list[dict[Any, Any]], folder: str, n=20, micro_on
             P0_in = 1, P0_out = {P0_out:2f} 
     """)
 
+    r_max = 1.
+
 
     for _ in range(n):
         #R =  rd.uniform(0.001, 0.5) 
@@ -130,8 +132,10 @@ def create_database(list_dict: list[dict[Any, Any]], folder: str, n=20, micro_on
         #rd.uniform(R_min, R_max)
         #math.exp(rd.uniform(math.log(R_min), math.log(R_max)))
 
-        R = math.exp(rd.uniform(math.log(R_min), math.log(R_max)))
-        r_max = rd.uniform(R*1.5, R*10.)
+        #R = math.exp(rd.uniform(math.log(R_min), math.log(R_max)))
+        #r_max = rd.uniform(R*1.5, R*10.)
+
+        R = rd.uniform(0.1, 0.8)
 
         dg = DataGenerator(
             R=R,
