@@ -174,7 +174,9 @@ if __name__ == "__main__":
         device=device,
         out_dir=test_dir,
         tag=f"{name}_test",
-        r_max_fixed=r_max_fixed
+        r_max_fixed=r_max_fixed,
+        R_scan_points=200,
+        R_scan_factor=0.2
     )
     plot_correlations(test_results, out_dir=test_dir, tag=f"{name}_test")
 
