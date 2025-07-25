@@ -83,9 +83,11 @@ def plot_search_R(model: FNO,
             errors.append(torch.norm(G_pred - G_true).cpu().item())
 
 
-        plt.plot(linespace.cpu().numpy(), errors, label=f'{name} - {i}')        
-        plt.axvline(x=params_original.R, color='r', linestyle='--', label=f'True R = {params_original.R:.4f}')
-        plt.legend()
-        plt.savefig(f"out/plots/{name}.png")
-        plt.close()
+            plt.plot(linespace.cpu().numpy(), errors, label=f'{name} - {i}')        
+            plt.axvline(x=params_original.R, color='r', linestyle='--', label=f'True R = {params_original.R:.4f}')
+            plt.legend()
+            plt.savefig(f"out/plots/{name}.png")
+            plt.close()
+
+        return errors, linespace
 

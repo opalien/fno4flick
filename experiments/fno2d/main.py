@@ -1,6 +1,6 @@
 import os
 import argparse
-
+import random
 import torch
 from torch import Tensor
 
@@ -28,21 +28,42 @@ parser.add_argument("-c", "--hidden_channels", type=int, default=16, help="numbe
 parser.add_argument("-e", "--epochs", type=int, default=100, help="number of training epochs")
 parser.add_argument("-p", "--model_path", type=str, default="", help="path to model")
 parser.add_argument("-d", "--dataset_path", type=str, default="data", help="path to dataset")
+parser.add_argument("-s", "--dataset_size", type=int, default=-1, help="size of the dataset")
 parser.add_argument("-n", "--name", type=str, default="fno2d", help="name of the experiment")
 parser.add_argument("-r", "--r_max_fixed", type=bool, default=False, help="if True, r_max is fixed to the true value")
 parser.add_argument("-b", "--batch_size", type=int, default=64, help="batch size")
 args = parser.parse_args()
 n_layers, n_modes, hidden_channels, epochs, model_path, dataset_path, name, r_max_fixed = args.n_layers, args.n_modes, args.hidden_channels, args.epochs, args.model_path, args.dataset_path, args.name, args.r_max_fixed
 batch_size = args.batch_size
+dataset_size = args.dataset_size
+
+
 
 if __name__ == "__main__":
+
+    directory = f"out/{name}/"
+    os.makedirs(directory, exist_ok=True)
+
+    
     dataset = Dataset()
     dataset.load(dataset_path)
+    
+    if dataset_size > 0:
+        dataset.elements = random.sample(dataset.elements, dataset_size)
 
+    directory_dataset = os.path.join(directory, "dataset")
+    os.makedirs(directory_dataset, exist_ok=True)
+    
+
+    dataset.plot_distribution(directory_dataset, "dataset")
     dataset.rescale()
+    dataset.plot_distribution(directory_dataset, "rescaled")
     dataset.nondimensionalize()
+    dataset.plot_distribution(directory_dataset, "nondimensionalized")
     dataset.compress()
+    dataset.plot_distribution(directory_dataset, "compressed")
     dataset.normalize()
+    dataset.plot_distribution(directory_dataset, "normalized")
 
     train_dataset, test_dataset = Dataset(), Dataset()
     
@@ -130,18 +151,50 @@ if __name__ == "__main__":
 
     checkpoint["model_state_dict"] = model.state_dict()
 
-    os.makedirs("out/models", exist_ok=True)
-    torch.save(checkpoint, f"out/models/{name}_{n_layers}_{n_modes}_{hidden_channels}_{len(checkpoint['iterations'])}.pth")
+    
+    os.makedirs(os.path.join(directory, "models"), exist_ok=True)
+    os.makedirs(os.path.join(directory, "plots"), exist_ok=True)
+    os.makedirs(os.path.join(directory, "plots", "test"), exist_ok=True)
+    os.makedirs(os.path.join(directory, "plots", "train"), exist_ok=True)
 
+    torch.save(checkpoint, os.path.join(directory, "models", f"{n_layers}_{n_modes}_{hidden_channels}_{len(checkpoint['iterations'])}.pth"))
 
     print("Accuracy with training : ", accuracy(model, test_dataloader, device))
-    
-    
-    for i in range(len(test_dataset.elements)):
-        plot_search_R(model, test_dataset, i, device, f"test_{name}_{i}", r_max_fixed=r_max_fixed)
+    # PAR :
+    from experiments.fno2d.some_tests import run_diagnostics, plot_correlations
 
-    for i in range(len(train_dataset.elements)):
-        plot_search_R(model, train_dataset, i, device, f"train_{name}_{i}", r_max_fixed=r_max_fixed)
+    diagn_dir = os.path.join(directory, "diagnostics")
+    os.makedirs(diagn_dir, exist_ok=True)
+
+    # Test set diagnostics
+    test_dir = os.path.join(diagn_dir, "test")
+    test_results = run_diagnostics(
+        model=model,
+        dataset=test_dataset,
+        device=device,
+        out_dir=test_dir,
+        tag=f"{name}_test",
+        r_max_fixed=r_max_fixed
+    )
+    plot_correlations(test_results, out_dir=test_dir, tag=f"{name}_test")
+
+    # Train set diagnostics (optionnel)
+    train_dir = os.path.join(diagn_dir, "train")
+    train_results = run_diagnostics(
+        model=model,
+        dataset=train_dataset,
+        device=device,
+        out_dir=train_dir,
+        tag=f"{name}_train",
+        r_max_fixed=r_max_fixed
+    )
+    plot_correlations(train_results, out_dir=train_dir, tag=f"{name}_train")
+    
+    #for i in range(len(test_dataset.elements)):
+    #    plot_search_R(model, test_dataset, i, device, os.path.join(directory, "plots", "test", f"{i}.png"), r_max_fixed=r_max_fixed)
+#
+    #for i in range(len(train_dataset.elements)):
+    #    plot_search_R(model, train_dataset, i, device, os.path.join(directory, "plots", "train", f"{i}.png"), r_max_fixed=r_max_fixed)
 
 
 

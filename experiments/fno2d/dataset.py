@@ -226,6 +226,55 @@ class Dataset(torch.utils.data.Dataset[tuple[EDPParameters, Tensor]]):
         return self.elements[idx]
     
 
+
+    def plot_distribution(self, path:str, name:str):
+        import matplotlib.pyplot as plt
+        C_in = [p.C_in for p, _ in self.elements]
+        C_out = [p.C_out for p, _ in self.elements]
+        D_in = [p.D_in for p, _ in self.elements]
+        D_out = [p.D_out for p, _ in self.elements]
+        T1_in = [p.T1_in for p, _ in self.elements]
+        T1_out = [p.T1_out for p, _ in self.elements]
+        P0_in = [p.P0_in for p, _ in self.elements]
+
+        fig, axs = plt.subplots(2, 3, figsize=(16, 10))
+
+        axs[0, 0].hist(C_in, bins=100, color="blue", alpha=0.7)
+        axs[0, 0].set_title("C_in")
+        axs[0, 0].set_xlabel("Value")
+        axs[0, 0].set_ylabel("Frequency")
+        
+        axs[0, 1].hist(C_out, bins=100, color="red", alpha=0.7)
+        axs[0, 1].set_title("C_out")
+        axs[0, 1].set_xlabel("Value")
+        axs[0, 1].set_ylabel("Frequency")
+
+        axs[0, 2].hist(D_in, bins=100, color="green", alpha=0.7)
+        axs[0, 2].set_title("D_in")
+        axs[0, 2].set_xlabel("Value")
+        axs[0, 2].set_ylabel("Frequency")
+
+        axs[1, 0].hist(D_out, bins=100, color="orange", alpha=0.7)
+        axs[1, 0].set_title("D_out")
+        axs[1, 0].set_xlabel("Value")
+        axs[1, 0].set_ylabel("Frequency")
+
+        axs[1, 1].hist(T1_in, bins=100, color="purple", alpha=0.7)
+        axs[1, 1].set_title("T1_in")
+        axs[1, 1].set_xlabel("Value")
+        axs[1, 1].set_ylabel("Frequency")
+
+        axs[1, 2].hist(T1_out, bins=100, color="brown", alpha=0.7)
+        axs[1, 2].set_title("T1_out")
+        axs[1, 2].set_xlabel("Value")
+        axs[1, 2].set_ylabel("Frequency")
+
+        plt.tight_layout()
+        plt.savefig(os.path.join(path, f"{name}_parameter_distributions.png"), dpi=180)
+        plt.close(fig)
+
+
+
     def get_dataloader(self, bs:int, shuffle:bool=True):
         return torch.utils.data.DataLoader(
             self, batch_size=bs, shuffle=shuffle, collate_fn=collate_fn
