@@ -11,3 +11,5 @@ data_R/*
 project.txt
 *_old.py
 *params
+*.json
+*.jsonl
