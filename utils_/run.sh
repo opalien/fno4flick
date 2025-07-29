@@ -23,10 +23,10 @@ CMD=$"srun python -m utils_.database -f examples/no_limit/Nt=100_Nr=200/ -n 100 
 
 echo "start"
 ml python/3.12
-ml cuda/12.4
-source ../env/bin/activate 
+ml conda
+conda activate /public/conda/user_envs/thibault.schneeberger/envs/fenicsx-0.9
 export PYTHONPATH=$PWD 
 echo "$SLURM_ARRAY_TASK_ID|$CMD" >> $BATCH_HIST
 $CMD
-deactivate
+conda deactivate
 echo "end"
