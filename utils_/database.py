@@ -136,7 +136,7 @@ def create_database(list_dict: list[dict[Any, Any]], folder: str, n=20, micro_on
         #math.exp(rd.uniform(math.log(R_min), math.log(R_max)))
         
         R = math.exp(rd.uniform(math.log(R_min), math.log(R_max)))
-        r_max = 4*R #rd.uniform(R*1.5, R*10.)
+        r_max = rd.uniform(R*1.5, R*10.)
 
         #r_max = 1.
         #R = rd.uniform(0.1, 0.8)
