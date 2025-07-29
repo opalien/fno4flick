@@ -25,6 +25,6 @@ ml cuda/12.4
 source ../env/bin/activate 
 export PYTHONPATH=$PWD 
 echo "$SLURM_ARRAY_TASK_ID|$CMD" >> $BATCH_HIST
-$CMD >> processing.txt
+($CMD) >> processing.txt
 deactivate
 echo "end"
