@@ -19,7 +19,7 @@ BATCH_HIST="batch.txt"
 
 
 
-CMD=$"srun python -m utils_.database -f examples/no_limit/Nt=100_Nr=200/ -n 100 -m True -t 0.1 -d 0.1 -N 200 -T 100"
+CMD=$"srun python -m utils_.database -f examples/no_limit/Nt=1000_Nr=200/ -n 100 -m True -t 0.0 -d 0.0 -N 1000 -T 200"
 
 echo "start"
 ml python/3.12
