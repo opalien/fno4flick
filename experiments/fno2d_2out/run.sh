@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --array=1%1
-#SBATCH --job-name=fno2d
+#SBATCH --job-name=fno4fick
 #SBATCH --nodes=1                # nombre de noeuds
 #SBATCH --ntasks=1               # nombre total de tâches sur tous les nœuds
 #SBATCH --cpus-per-task=1
@@ -11,6 +11,7 @@
 #SBATCH --mail-type=ALL
 #SBATCH --requeue
 #SBATCH --gres=gpu:1
+#SBATCH --partition=gpu
 
 # export TMPDIR=/scratch/<project>/tmp
 
