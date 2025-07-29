@@ -1,4 +1,6 @@
 import os
+import argparse
+
 from utils_.data_generator import DataGenerator
 from utils_.convert import C_converter, R_converter, D_converter
 
@@ -10,6 +12,7 @@ import torch
 
 def empty_database(folder: str):
     if os.path.exists(folder):
+        return
         for sub_folder in ["train", "test", "dev", "plot"]:
             sub_folder_path = os.path.join(folder, sub_folder)
             if os.path.exists(sub_folder_path):
@@ -80,7 +83,7 @@ def extract_params_from_brut(folder: str):
     return list_params
 
 
-def create_database(list_dict: list[dict[Any, Any]], folder: str, n=20, micro_ondes: bool= True, test: float = 0.1, dev: float = 0.1):
+def create_database(list_dict: list[dict[Any, Any]], folder: str, n=20, micro_ondes: bool= True, test: float = 0.1, dev: float = 0.1, Nr: int = 200, Nt: int = 100):
 
     R_max = max([params["R"] for params in list_dict]) # typ: ignore
     R_min = min([params["R"] for params in list_dict]) # typ: ignore
@@ -150,8 +153,8 @@ def create_database(list_dict: list[dict[Any, Any]], folder: str, n=20, micro_on
             P0_in=1., #rd.uniform(P0_in_min, P0_in_max),
             P0_out=P0_out, #rd.uniform(P0_out_min, P0_out_max),
             Tfinal=40.,
-            Nr=200,
-            Nt=100,
+            Nr=Nr,
+            Nt=Nt,
             tanh_slope=0
         )
         dg.solve()
@@ -178,7 +181,16 @@ def create_database(list_dict: list[dict[Any, Any]], folder: str, n=20, micro_on
 
         
 if __name__ == "__main__":
-    folder = "examples/r_max=4R/low_res"
-    #empty_database(folder)
+
+    parser = argparse.ArgumentParser(description="Database generator.")
+    parser.add_argument("-f", "--folder", type=str, default="examples/test/low_res", help="folder to save the database")
+    parser.add_argument("-n", "--n", type=int, default=20, help="number of data to generate")
+    parser.add_argument("-m", "--micro_ondes", type=bool, default=True, help="if True, use micro-ondes")
+    parser.add_argument("-t", "--test", type=float, default=0., help="test ratio")
+    parser.add_argument("-d", "--dev", type=float, default=0., help="dev ratio")
+    parser.add_argument("-N", "--Nr", type=int, default=200, help="number of points in the radial direction")
+    parser.add_argument("-T", "--Nt", type=int, default=100, help="number of points in the temporal direction")
+    args = parser.parse_args()
+    empty_database(args.folder)
     list_dict = extract_params_from_brut("data/brut")
-    create_database(list_dict, folder, test=0.0, dev=0.0, n=1_000, micro_ondes=True)
+    create_database(list_dict, args.folder, test=args.test, dev=args.dev, n=args.n, micro_ondes=args.micro_ondes, Nr=args.Nr, Nt=args.Nt)
