@@ -25,6 +25,7 @@ echo "start"
 ml python/3.12
 ml conda
 conda activate /public/conda/user_envs/thibault.schneeberger/envs/fenicsx-0.9
+export PYTHONNOUSERSITE=1
 export PYTHONPATH=$PWD 
 echo "$SLURM_ARRAY_TASK_ID|$CMD" >> $BATCH_HIST
 $CMD
