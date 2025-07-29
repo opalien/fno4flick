@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --array=1%1
+#SBATCH --array=1-10%3
 #SBATCH --job-name=fno4fick
 #SBATCH --nodes=1                # nombre de noeuds
 #SBATCH --ntasks=1               # nombre total de tâches sur tous les nœuds
@@ -17,7 +17,9 @@
 
 BATCH_HIST="batch.txt"
 
-CMD=$"srun --unbuffered python -u -m experiments.fno2d_2out.main -l 4 -m 64 -c 64 -e 200 -d examples/no_limit/Nt=1000_Nr=200/train/ -n no_limit_2out_Nt=1000_Nr=200_without_batch_hist_problem_unbuffered -b 16 -r True"
+NAMES=("1" "2" "3" "4" "5" "6" "7" "8" "9" "10")
+
+CMD=$"srun --unbuffered python -u -m experiments.fno2d_2out.main -l 4 -m 64 -c 64 -e 200 -d examples/no_limit/Nt=1000_Nr=200/train/ -n ${NAMES} -b 16 -r True"
 
 echo "start"
 ml python/3.12
