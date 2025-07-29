@@ -47,6 +47,8 @@ if __name__ == "__main__":
 
     
     dataset = Dataset()
+
+    print(f"Loading dataset from {dataset_path}")
     dataset.load(dataset_path)
     
     if dataset_size > 0:
