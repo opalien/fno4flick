@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --array=1-100%50
+#SBATCH --array=1-100%100
 #SBATCH --job-name=dataset
 #SBATCH --nodes=1                # nombre de noeuds
 #SBATCH --ntasks=1               # nombre total de tâches sur tous les nœuds
