@@ -4,17 +4,20 @@
 #SBATCH --nodes=1                # nombre de noeuds
 #SBATCH --ntasks=1               # nombre total de tâches sur tous les nœuds
 #SBATCH --cpus-per-task=1
-#SBATCH --time=23:00:00
+#SBATCH --time=48:00:00
 #SBATCH --mem=64G
 #SBATCH --output=hs_slurm/dcv_hist/out/slurm-%A_%a.txt
 #SBATCH --error=hs_slurm/dcv_hist/err/slurm-%A_%a.txt
 #SBATCH --mail-type=ALL
 #SBATCH --requeue
 #SBATCH --gres=gpu:1
+#SBATCH --partition=gpu
 
 # export TMPDIR=/scratch/<project>/tmp
 
-CMD=$"srun python -m experiments.fno2d_2out.main -l 4 -m 64 -c 64 -e 200 -d examples/no_limit/Nt=1000_Nr=200/train/ -n no_limit_2out_Nt=1000_Nr=200 -b 16 -r True"
+BATCH_HIST="batch.txt"
+
+CMD=$"srun python -m experiments.fno2d_2out.main -l 4 -m 64 -c 64 -e 200 -d examples/no_limit/Nt=1000_Nr=200/train/ -n no_limit_2out_Nt=1000_Nr=200_without_batch_hist_problem -b 16 -r True"
 
 echo "start"
 ml python/3.12
