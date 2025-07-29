@@ -17,7 +17,7 @@
 
 BATCH_HIST="batch.txt"
 
-CMD=$"srun python -u -m experiments.fno2d_2out.main -l 4 -m 64 -c 64 -e 200 -d examples/no_limit/Nt=1000_Nr=200/train/ -n no_limit_2out_Nt=1000_Nr=200_without_batch_hist_problem_unbuffered -b 16 -r True"
+CMD=$"srun --unbuffered python -u -m experiments.fno2d_2out.main -l 4 -m 64 -c 64 -e 200 -d examples/no_limit/Nt=1000_Nr=200/train/ -n no_limit_2out_Nt=1000_Nr=200_without_batch_hist_problem_unbuffered -b 16 -r True"
 
 echo "start"
 ml python/3.12
