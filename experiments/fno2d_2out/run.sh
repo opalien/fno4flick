@@ -4,14 +4,13 @@
 #SBATCH --nodes=1                # nombre de noeuds
 #SBATCH --ntasks=1               # nombre total de tâches sur tous les nœuds
 #SBATCH --cpus-per-task=1
-#SBATCH --time=48:00:00
+#SBATCH --time=23:00:00
 #SBATCH --mem=64G
 #SBATCH --output=hs_slurm/dcv_hist/out/slurm-%A_%a.txt
 #SBATCH --error=hs_slurm/dcv_hist/err/slurm-%A_%a.txt
 #SBATCH --mail-type=ALL
 #SBATCH --requeue
 #SBATCH --gres=gpu:1
-#SBATCH --partition=gpu
 
 # export TMPDIR=/scratch/<project>/tmp
 
