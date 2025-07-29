@@ -15,7 +15,7 @@
 
 # export TMPDIR=/scratch/<project>/tmp
 
-CMD=$"srun python -m experiments.fno2d_2out.main -l 4 -m 64 -c 64 -e 200 -d examples/no_limit/Nt=1000_Nr=200/train/ -n no_limit_2out_Nt=1000_Nr=200 -b 32 -r True"
+CMD=$"srun python -m experiments.fno2d_2out.main -l 4 -m 64 -c 64 -e 200 -d examples/no_limit/Nt=1000_Nr=200/train/ -n no_limit_2out_Nt=1000_Nr=200 -b 16 -r True"
 
 echo "start"
 ml python/3.12
