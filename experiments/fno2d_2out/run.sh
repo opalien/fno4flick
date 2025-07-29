@@ -14,41 +14,14 @@
 
 # export TMPDIR=/scratch/<project>/tmp
 
-DIR=$1
-PARAMS_OFFSET=$2
-
-PARAMS_FILE="${DIR}/params"
-RUNLOG_FILE="${DIR}/runlog"
-BATCH_HIST="batch.txt"
-
-if [ -z "$PARAMS_OFFSET" ]
-then
-    PARAMS_OFFSET=0
-fi
-
-if [ ! -d "$DIR" -o ! -f "$PARAMS_FILE" ]
-then
-    echo "Usage: $0 DIR [PARAMS_OFFSET]"
-    echo "where DIR is a directory containing a file 'params' with the parameters."
-    exit 1
-fi
-
-PARAMS_ID=$(( $SLURM_ARRAY_TASK_ID + $PARAMS_OFFSET ))
-JOB_NAME="${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}"
-
-echo "$PARAMS_ID|$JOB_NAME|$SLURM_SUBMIT_DIR" >> $RUNLOG_FILE
-
-PARAMS=$(tail -n +${PARAMS_ID} ${PARAMS_FILE} | head -n 1)
-
-CMD=$"srun python -m experiments.fno2d_2out.main -l 4 -m 64 -c 64 -e 200 -d data/no_limit/low_res/train/ -n no_limit_2out_2 -b 16 -r True"
+CMD=$"srun python -m experiments.fno2d_2out.main -l 4 -m 64 -c 64 -e 200 -d data/no_limit/Nt=1000_Nr=200/train/ -n no_limit_2out_Nt=1000_Nr=200 -b 16 -r True"
 
 echo "start"
 ml python/3.12
 ml cuda/12.4
-echo "$PARAMS"
 source ../env/bin/activate 
 export PYTHONPATH=$PWD 
-echo "$PARAMS_ID|$JOB_NAME|$SLURM_SUBMIT_DIR|$CMD" >> $BATCH_HIST
+echo "$SLURM_ARRAY_TASK_ID|$CMD" >> $BATCH_HIST
 $CMD
 deactivate
 echo "end"
