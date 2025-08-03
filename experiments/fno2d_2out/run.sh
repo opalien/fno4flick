@@ -17,7 +17,7 @@
 
 BATCH_HIST="batch.txt"
 
-NAMES=("1" "2" "3" "4" "5" "6" "7" "8" "9" "10")
+NAMES=("1_with_output" "2_with_output" "3_with_output" "4_with_output" "5_with_output" "6_with_output" "7_with_output" "8_with_output" "9_with_output" "10_with_output")
 
 CMD=$"srun --unbuffered python -u -m experiments.fno2d_2out.main -l 4 -m 64 -c 64 -e 200 -d examples/no_limit/Nt=1000_Nr=200/train/ -n ${NAMES} -b 16 -r True"
 

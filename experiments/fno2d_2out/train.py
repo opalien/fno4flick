@@ -20,10 +20,12 @@ def accuracy(model: torch.nn.Module,
 
             u_pred = model(a) 
 
-            error = lp_loss(u_pred[:, 0], u[:, 0])
+            error = lp_loss(u_pred, u)
             total_error += error.item()
 
     return total_error / len(dataloader)
+
+
 
 
 
@@ -43,7 +45,7 @@ def train_one_epoch(model: torch.nn.Module,
 
         u_pred = model(a)  
 
-        loss = lp_loss(u_pred[:, 0], u[:, 0])
+        loss = lp_loss(u_pred, u)
         loss.backward()
         optimizer.step()
 
