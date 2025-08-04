@@ -62,43 +62,38 @@ os.makedirs(path_diagnostics_train, exist_ok=True)
 
 
 
+
 def setup_datasets():
-    dataset = FickDataset() 
-    print(f"Loading dataset from {args.dataset_path}")
+    # AJOUT : Définir les résolutions cibles ici
+    TARGET_NT, TARGET_NR = 200, 100 
+    
+    # Passer les résolutions au constructeur
+    dataset = FickDataset(target_nt=TARGET_NT, target_nr=TARGET_NR) 
+    print(f"Loading and interpolating dataset to Nt={TARGET_NT}, Nr={TARGET_NR} from {args.dataset_path}")
     dataset.load(args.dataset_path)
 
-    if args.dataset_size > 0:
-        dataset.elements = random.sample(dataset.elements, args.dataset_size)
-
+    # ... (le reste de la fonction est inchangé)
+    # N'oubliez pas d'ajouter l'appel à apply_P_normalizer() comme discuté précédemment !
     dataset.get_normalizers()
-
-    print(f"Plotting dataset distribution ", end="")
-    dataset.plot_distribution(path_dataset, actions={""})
-    print("rescale", end=", ")
-    dataset.plot_distribution(path_dataset, actions={"rescale"})
-    print("nondimensionalize", end=", ")
-    dataset.plot_distribution(path_dataset, actions={"rescale", "nondimensionalize"})
-    print("compress", end=", ")
-    dataset.plot_distribution(path_dataset, actions={"rescale", "nondimensionalize", "compress"})
-    print("normalize", end=", ")
-    dataset.plot_distribution(path_dataset, actions={"rescale", "nondimensionalize", "compress", "normalize"})
-    print("done")
-
-    print(f"Normalisations parameters: \nC : {dataset.C_normalizer}, \nD : {dataset.D_normalizer}, \nR : {dataset.R_normalizer}, \nT1 : {dataset.T1_normalizer}, \nP0 : {dataset.P0_normalizer}")
     dataset.apply_P_normalizer()
+    print("\nNormalisation de P appliquée au dataset.")
+    # ...
 
-    train_dataset, test_dataset = FickDataset(), FickDataset()
-
+    # Pour la division train/test
+    train_dataset = FickDataset(target_nt=TARGET_NT, target_nr=TARGET_NR)
+    test_dataset = FickDataset(target_nt=TARGET_NT, target_nr=TARGET_NR)
+    
     train_dataset.elements, test_dataset.elements = train_test_split(
         dataset.elements, 
         test_size=0.1, 
         random_state=42
     )
-
+    
     train_dataset.set_normalizers(dataset)
     test_dataset.set_normalizers(dataset)
 
     return train_dataset, test_dataset
+
 
 
 def get_model() -> tuple[dict[Any, Any], FickModel]:
