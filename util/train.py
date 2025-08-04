@@ -69,7 +69,7 @@ def train_one_epoch(model: torch.nn.Module,
     
     model.train()
     model.to(device)
-    loss = 0.0
+    total_loss = 0.0
 
     for i, (params, P) in enumerate(dataloader):
         params = [p.to(device) for p in params]
@@ -78,20 +78,12 @@ def train_one_epoch(model: torch.nn.Module,
         optimizer.zero_grad()
         P_pred = model(params)
         loss = lp_loss(P_pred, P)
-
-        # --- AJOUTER CE BLOC DE DÉBOGAGE POUR LE PREMIER BATCH DE LA PREMIÈRE ÉPOQUE ---
-        if i == 0:
-            print(f"\n--- Sanity Check (Batch 0) ---")
-            print(f"Target P shape: {P.shape}, Mean: {P.mean():.4f}, Std: {P.std():.4f}")
-            print(f"Pred   P shape: {P_pred.shape}, Mean: {P_pred.mean():.4f}, Std: {P_pred.std():.4f}")
-            print(f"Loss: {loss.item():.4f}")
-            print(f"---------------------------------\n")
-        # --- FIN DU BLOC DE DÉBOGAGE ---
+        total_loss+=loss.item()
 
         loss.backward()
         optimizer.step()
         params = [p.to("cpu") for p in params]
-    return loss.item() / len(dataloader)
+    return total_loss / len(dataloader)
 
 
 
