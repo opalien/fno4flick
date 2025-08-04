@@ -11,7 +11,6 @@
 #SBATCH --mail-type=ALL
 #SBATCH --requeue
 #SBATCH --gres=gpu:1
-#SBATCH --partition=gpu
 
 # export TMPDIR=/scratch/<project>/tmp
 
