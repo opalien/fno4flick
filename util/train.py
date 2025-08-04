@@ -2,31 +2,60 @@ import torch
 import time
 
 from neuralop import LpLoss
-from experiments.fno2d_2out.dataset import Dataset
+from models.dataset import FickDataset
+from models.model import FickModel, postprocess
+from util.G_method import compute_G_in, compute_G_out
 
 lp_loss = LpLoss(d=2, p=2, reduction="mean") 
 
-def accuracy(model: torch.nn.Module,
+
+def R_error(model: FickModel,
             dataloader: torch.utils.data.DataLoader,
-            device: torch.device) -> float:
-
+            device: torch.device) -> tuple[float, float]:
+    
     model.eval()
-
-    total_error: float = 0.0
-
+    
+    loss_in = 0.0
+    loss_out = 0.0
+    n = 0
     with torch.no_grad():
-        for a, u in dataloader:
-            a, u = a.to(device), u.to(device)
+        for params, P in dataloader:
+            batch_size = len(params)
+            n+=batch_size
+            params = [p.to(device) for p in params]
+            
+            P = postprocess(P)
+            
+            G_in_true = compute_G_in(P)
+            list_R_in_pred = torch.tensor(model.search_R_in(params,  G_in_true, device))
 
-            u_pred = model(a) 
+            R_true_tensor = torch.stack([p.R for p in params])
+            loss_in += torch.mean(torch.abs(R_true_tensor - list_R_in_pred)/R_true_tensor) * batch_size
 
-            error = lp_loss(u_pred, u)
-            total_error += error.item()
+            G_out_true = compute_G_out(P, params)
+            list_R_out_pred = torch.tensor(model.search_R_out(params,  G_out_true, device))
 
-    return total_error / len(dataloader)
+            R_true_tensor = torch.stack([p.R for p in params])
+            loss_out += torch.mean(torch.abs(R_true_tensor - list_R_out_pred)/R_true_tensor) * batch_size
+            
+
+    return loss_in / n, loss_out / n
 
 
 
+
+
+def accuracy(model: torch.nn.Module, dataloader: torch.utils.data.DataLoader, device: torch.device) -> float:
+    model.eval()
+    loss = 0.0
+    with torch.no_grad():
+        for params, P in dataloader:
+            params = [p.to(device) for p in params]
+            P = P.to(device)
+
+            P_pred = model(params)
+            loss += lp_loss(P_pred, P)
+    return loss.item() / len(dataloader)
 
 
 def train_one_epoch(model: torch.nn.Module, 
@@ -35,26 +64,20 @@ def train_one_epoch(model: torch.nn.Module,
                     device: torch.device) -> float:
     
     model.train()
+    loss = 0.0
 
-    total_loss: float = 0.0
-
-    for a, u in dataloader:
-        a, u = a.to(device), u.to(device)
+    for params, P in dataloader:
+        params = [p.to(device) for p in params]
+        P = P.to(device)
 
         optimizer.zero_grad()
-
-        u_pred = model(a)  
-
-        loss = lp_loss(u_pred, u)
+        P_pred = model(params)
+        loss = lp_loss(P_pred, P)
         loss.backward()
         optimizer.step()
+    return loss.item() / len(dataloader)
 
-        total_loss += loss.item()
 
-    
-    total_loss = total_loss / len(dataloader)
-
-    return total_loss
 
 
 def train(model: torch.nn.Module, 
@@ -67,8 +90,10 @@ def train(model: torch.nn.Module,
 
     model.to(device)
 
-    
-    
+    train_losses: list[float] = []
+    test_losses: list[float] = []
+    times: list[float] = []
+
 
     train_losses: list[float] = []
     times: list[float] = []
@@ -99,3 +124,7 @@ def train(model: torch.nn.Module,
             print(f"Epoch {epoch + 1}/{epochs}, Loss: {loss:.4f}, LR: {current_lr:.6f}, Time: {t1 - t0:.2f}s")
 
     return train_losses, test_losses, times
+
+
+
+

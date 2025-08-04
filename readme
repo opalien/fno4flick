@@ -436,13 +436,13 @@ Cela réduit encore l'espace de recherche en ne faisant varier que trois variabl
 
 \subsection{Changement d'échelle}
 
-Nous donnons au modèle le logarithme de chacune des valeurs
-avec peut etre le racine $log\left(\hat{C}\right)$ et $log\left(\hat{D}\right)$
+Nous donnons au modèle le logarithme de la diffusion : 
+$\bar{D} = log\left(\hat{D}\right)$
 
 \subsection{normalisation}
 
 
-A la suite de cela, nous appliquons une normalisation (loi normale multivariée) sur les variables d'entrées $\bar{C}(\hat{r})$, $\bar{D}(\hat{r})$, $\bar{T}_1(\hat{r})$ et de sortie $\hat{P}(\hat{r}, \hat{t})$ pour que l'apprentissage soit plus stable.
+A la suite de cela, nous appliquons une normalisation (loi normale multivariée) sur les variables d'entrées $\bar{C}(\hat{r})$, $\bar{D}(\hat{r})$, $\hat{T}_1(\hat{r})$ et de sortie $P(\hat{r}, \hat{t})$ pour que l'apprentissage soit plus stable.
 
 
 
