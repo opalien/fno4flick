@@ -74,7 +74,24 @@ def setup_datasets():
 
     # ... (le reste de la fonction est inchangé)
     # N'oubliez pas d'ajouter l'appel à apply_P_normalizer() comme discuté précédemment !
+    if args.dataset_size > 0:
+        dataset.elements = random.sample(dataset.elements, args.dataset_size)
+
     dataset.get_normalizers()
+
+    print(f"Plotting dataset distribution ", end="")
+    dataset.plot_distribution(path_dataset, actions={""})
+    print("rescale", end=", ")
+    dataset.plot_distribution(path_dataset, actions={"rescale"})
+    print("nondimensionalize", end=", ")
+    dataset.plot_distribution(path_dataset, actions={"rescale", "nondimensionalize"})
+    print("compress", end=", ")
+    dataset.plot_distribution(path_dataset, actions={"rescale", "nondimensionalize", "compress"})
+    print("normalize", end=", ")
+    dataset.plot_distribution(path_dataset, actions={"rescale", "nondimensionalize", "compress", "normalize"})
+    print("done")
+
+    print(f"Normalisations parameters: \nC : {dataset.C_normalizer}, \nD : {dataset.D_normalizer}, \nR : {dataset.R_normalizer}, \nT1 : {dataset.T1_normalizer}, \nP0 : {dataset.P0_normalizer}")
     dataset.apply_P_normalizer()
     print("\nNormalisation de P appliquée au dataset.")
     # ...
@@ -140,6 +157,15 @@ if __name__ == "__main__":
     test_dataloader = test_dataset.get_dataloader(args.batch_size, shuffle=False)
 
     checkpoint, model = get_model()
+
+    print("Transfert des normalizers du dataset vers le modèle...")
+    model.P_normalizer = train_dataset.P_normalizer
+    model.C_normalizer = train_dataset.C_normalizer
+    model.D_normalizer = train_dataset.D_normalizer
+    #model.R_normalizer = train_dataset.R_normalizer
+    model.T1_normalizer = train_dataset.T1_normalizer
+    model.P0_normalizer = train_dataset.P0_normalizer
+    print("Transfert terminé.")
 
     print(f"Accuracy without training: {accuracy(model, test_dataloader, device)}")
 
