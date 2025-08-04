@@ -17,7 +17,9 @@
 
 BATCH_HIST="batch.txt"
 
-NAMES=("1_final")
+NAME=$1
+
+NAMES=("${NAME}")
 
 CMD=$"srun --unbuffered python -u -m experiments.train.main -l 4 -m 64 -c 64 -e 200 -d examples/no_limit/Nt=1000_Nr=200/train/ -n ${NAMES} -b 16"
 
