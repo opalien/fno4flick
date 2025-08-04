@@ -85,7 +85,7 @@ def setup_datasets():
     print("done")
 
     print(f"Normalisations parameters: \nC : {dataset.C_normalizer}, \nD : {dataset.D_normalizer}, \nR : {dataset.R_normalizer}, \nT1 : {dataset.T1_normalizer}, \nP0 : {dataset.P0_normalizer}")
-
+    dataset.apply_P_normalizer()
 
     train_dataset, test_dataset = FickDataset(), FickDataset()
 

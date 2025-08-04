@@ -39,6 +39,7 @@ def R_error(model: FickModel,
             R_true_tensor = torch.stack([p.R for p in params])
             loss_out += torch.mean(torch.abs(R_true_tensor - list_R_out_pred)/R_true_tensor) * batch_size
             
+            params = [p.to("cpu") for p in params]
 
     return loss_in / n, loss_out / n
 
@@ -57,6 +58,7 @@ def accuracy(model: torch.nn.Module, dataloader: torch.utils.data.DataLoader, de
 
             P_pred = model(params)
             loss += lp_loss(P_pred, P)
+            params = [p.to("cpu") for p in params]
     return loss.item() / len(dataloader)
 
 
@@ -78,6 +80,7 @@ def train_one_epoch(model: torch.nn.Module,
         loss = lp_loss(P_pred, P)
         loss.backward()
         optimizer.step()
+        params = [p.to("cpu") for p in params]
     return loss.item() / len(dataloader)
 
 
