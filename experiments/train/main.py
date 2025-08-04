@@ -104,7 +104,7 @@ def setup_datasets():
 def get_model() -> tuple[dict[Any, Any], FickModel]:
     if args.model_path:
         checkpoint = torch.load(args.model_path, weights_only=False)
-        model = FickModel(**checkpoint["parameters"])
+        model = FickModel(**checkpoint["parameters"]).to(device)
         model = torch.compile(model)
         model.load_state_dict(checkpoint["model_state_dict"], strict=False)
 
@@ -130,6 +130,7 @@ def get_model() -> tuple[dict[Any, Any], FickModel]:
             hidden_channels=args.hidden_channels,
             device=device
         )
+        model = model.to(device)
         model = torch.compile(model)
 
         return checkpoint, model

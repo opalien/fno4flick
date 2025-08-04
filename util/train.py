@@ -14,6 +14,7 @@ def R_error(model: FickModel,
             device: torch.device) -> tuple[float, float]:
     
     model.eval()
+    model.to(device)
     
     loss_in = 0.0
     loss_out = 0.0
@@ -47,6 +48,7 @@ def R_error(model: FickModel,
 
 def accuracy(model: torch.nn.Module, dataloader: torch.utils.data.DataLoader, device: torch.device) -> float:
     model.eval()
+    model.to(device)
     loss = 0.0
     with torch.no_grad():
         for params, P in dataloader:
@@ -64,6 +66,7 @@ def train_one_epoch(model: torch.nn.Module,
                     device: torch.device) -> float:
     
     model.train()
+    model.to(device)
     loss = 0.0
 
     for params, P in dataloader:
