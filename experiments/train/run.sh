@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --array=1-10%3
+#SBATCH --array=1%1
 #SBATCH --job-name=fno4fick
 #SBATCH --nodes=1                # nombre de noeuds
 #SBATCH --ntasks=1               # nombre total de tâches sur tous les nœuds
