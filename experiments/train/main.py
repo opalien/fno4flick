@@ -118,7 +118,7 @@ def get_model() -> tuple[dict[Any, Any], FickModel]:
         print(f"Loading model from {args.model_path}")
         checkpoint = torch.load(args.model_path, weights_only=False)
         model = FickModel(**checkpoint["parameters"]).to(device)
-        #model = torch.compile(model)
+        model = torch.compile(model)
         model.load_state_dict(checkpoint["model_state_dict"], strict=False)
 
         return checkpoint, model
@@ -145,7 +145,7 @@ def get_model() -> tuple[dict[Any, Any], FickModel]:
             device=device
         )
         model = model.to(device)
-        #model = torch.compile(model)
+        model = torch.compile(model)
 
         return checkpoint, model
 
