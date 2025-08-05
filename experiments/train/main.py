@@ -115,6 +115,7 @@ def setup_datasets():
 
 def get_model() -> tuple[dict[Any, Any], FickModel]:
     if args.model_path:
+        print(f"Loading model from {args.model_path}")
         checkpoint = torch.load(args.model_path, weights_only=False)
         model = FickModel(**checkpoint["parameters"]).to(device)
         #model = torch.compile(model)
@@ -124,6 +125,7 @@ def get_model() -> tuple[dict[Any, Any], FickModel]:
 
 
     else:
+        print(f"Creating new model")
         checkpoint = {
             "parameters": {
                 "n_modes": (args.n_modes, args.n_modes),
@@ -152,11 +154,13 @@ def get_model() -> tuple[dict[Any, Any], FickModel]:
 
 if __name__ == "__main__":
 
+    checkpoint, model = get_model()
+
     train_dataset, test_dataset = setup_datasets()
     train_dataloader = train_dataset.get_dataloader(args.batch_size, shuffle=True)
     test_dataloader = test_dataset.get_dataloader(args.batch_size, shuffle=False)
 
-    checkpoint, model = get_model()
+    
 
     print("Transfert des normalizers du dataset vers le modèle...")
     model.P_normalizer = train_dataset.P_normalizer
