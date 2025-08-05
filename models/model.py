@@ -113,11 +113,9 @@ class FickModel(nn.Module):
                     )
                 )
 
-                rmax = float(p_proc.r_max)  # = 1 après rescaling()
-                a = 0.1*rmax
-                c = 0.9*rmax
-                b = c - phi * (c - a)
-                d = a + phi * (c - a)
+                # Intervalle large par défaut
+                lo = eps
+                hi = float(p_proc.r_max) - eps  # = 1 - eps après rescaling
 
                 p_root = p.get_root_parent()
                 R_true_dimless = float(p_root.R) / (float(p_root.r_max) + 1e-12)
@@ -140,11 +138,29 @@ class FickModel(nn.Module):
                         parent=p_proc,
                         parenthood="R_override",
                     )
-                    fick_fno = self._forward_from_processed([p_tmp], Nt, Nr)  # (B=1, 2, 2Nt, 2Nr)
-                    fick = postprocess(fick_fno)  # (B=1, 2, Nt, Nr)
-                    G_pred = compute_G_in(fick)  # (B=1, Nt)
+                    fick_fno = self._forward_from_processed([p_tmp], Nt, Nr)
+                    fick = postprocess(fick_fno)
+                    G_pred = compute_G_in(fick)
                     l = G_error(G_pred, G_true[bidx : bidx + 1])
                     return float(l)
+
+                # --- 1) Balayage grossier pour bracketer le minimum
+                grid_N = 21
+                grid = torch.linspace(lo, hi, grid_N, device=self.device).tolist()
+                vals = [loss_at(float(x)) for x in grid]
+                i_min = int(torch.tensor(vals).argmin().item())
+
+                # choisir un intervalle [a, c] qui encadre le minimum (prendre les voisins)
+                if i_min == 0:
+                    a, c = grid[0], grid[1]
+                elif i_min == grid_N - 1:
+                    a, c = grid[-2], grid[-1]
+                else:
+                    a, c = grid[i_min - 1], grid[i_min + 1]
+
+                # --- 2) Golden-section sur [a, c]
+                b = c - phi * (c - a)
+                d = a + phi * (c - a)
 
                 fb = loss_at(float(b))
                 fd = loss_at(float(d))
@@ -171,9 +187,15 @@ class FickModel(nn.Module):
                     print(f"[search_R_in] step={k:03d} batch={bidx:02d} R_pred={R_pred:.6f}  |Δ|/R={rel_err:.3e}  Δstep={dstep:.3e}")
                     prev_R = R_pred
 
-                R_best = b if fb <= fd else d
+                # Vérifie toutes les bornes pour être sûr (utile si le min est très proche d'un bord)
+                cand = [a, b, d, c]
+                cand_vals = [loss_at(float(x)) for x in cand]
+                R_best = cand[int(torch.tensor(cand_vals).argmin().item())]
+
                 out_list.append(torch.as_tensor(float(R_best), device=self.device))
         return out_list
+
+
 
     def search_R_out(self, list_params: list[FickParams], G_true: Tensor, Nt: int, Nr: int) -> list[Tensor]:
         eps = 1e-4
