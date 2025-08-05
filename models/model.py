@@ -114,8 +114,8 @@ class FickModel(nn.Module):
                 )
 
                 # Intervalle large par défaut
-                lo = eps
-                hi = float(p_proc.r_max) - eps  # = 1 - eps après rescaling
+                lo = 0.1*float(p_proc.r_max)
+                hi = 0.9*float(p_proc.r_max)  # = 1 - eps après rescaling
 
                 p_root = p.get_root_parent()
                 R_true_dimless = float(p_root.R) / (float(p_root.r_max) + 1e-12)
