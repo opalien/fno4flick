@@ -114,8 +114,8 @@ class FickModel(nn.Module):
                 )
 
                 rmax = float(p_proc.r_max)  # = 1 après rescaling()
-                a = eps
-                c = rmax - eps
+                a = 0.1*rmax
+                c = 0.9*rmax
                 b = c - phi * (c - a)
                 d = a + phi * (c - a)
 
@@ -197,8 +197,8 @@ class FickModel(nn.Module):
                 )
 
                 rmax = float(p_proc.r_max)  # = 1 après rescaling()
-                a = eps
-                c = rmax - eps
+                a = 0.1*rmax
+                c = 0.9*rmax
                 b = c - phi * (c - a)
                 d = a + phi * (c - a)
 
