@@ -194,19 +194,25 @@ class FickDataset(torch.utils.data.Dataset):
 
         fig, axs = plt.subplots(2, 3, figsize=(16, 10))
         axs[0, 0].hist([p.C_in for p in list_params], bins=100, color="blue", label="C_in")
-        axs[0, 0].hist([p.C_out for p in list_params], bins=100, color="red", label="C_out", alpha=0.7)
-        axs[0, 0].set_title("Distribution de C")
+        axs[0, 0].set_title("Distribution de C_in")
         axs[0, 0].legend()
-        
+        axs[1, 0].hist([p.C_out for p in list_params], bins=100, color="red", label="C_out", alpha=0.7)
+        axs[1, 0].set_title("Distribution de C_out")
+        axs[1, 0].legend()
+
         axs[0, 1].hist([p.D_in for p in list_params], bins=100, color="green", label="D_in")
-        axs[0, 1].hist([p.D_out for p in list_params], bins=100, color="orange", label="D_out", alpha=0.7)
-        axs[0, 1].set_title("Distribution de D")
+        axs[0, 1].set_title("Distribution de D_in")
         axs[0, 1].legend()
+        axs[1, 1].hist([p.D_out for p in list_params], bins=100, color="orange", label="D_out", alpha=0.7)
+        axs[1, 1].set_title("Distribution de D_out")
+        axs[1, 1].legend()
 
         axs[0, 2].hist([p.T1_in for p in list_params], bins=100, color="purple", label="T1_in")
-        axs[0, 2].hist([p.T1_out for p in list_params], bins=100, color="brown", label="T1_out", alpha=0.7)
-        axs[0, 2].set_title("Distribution de T1")
+        axs[0, 2].set_title("Distribution de T1_in")
         axs[0, 2].legend()
+        axs[1, 2].hist([p.T1_out for p in list_params], bins=100, color="brown", label="T1_out", alpha=0.7)
+        axs[1, 2].set_title("Distribution de T1_out")
+        axs[1, 2].legend()
         
         plt.tight_layout()
         plt.savefig(os.path.join(path, f"{name}.png"))

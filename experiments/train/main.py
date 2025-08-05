@@ -5,6 +5,7 @@ import shutil
 
 from typing import Any
 
+import numpy as np
 import torch
 
 from sklearn.model_selection import train_test_split
@@ -13,6 +14,10 @@ from models.dataset import FickDataset
 from models.model import FickModel
 from util.test_model import plot_correlations, run_diagnostics
 from util.train import accuracy, train
+
+random.seed(42)
+np.random.seed(42)
+torch.manual_seed(42)
 
 
 
@@ -74,8 +79,7 @@ def setup_datasets():
 
     # ... (le reste de la fonction est inchangé)
     # N'oubliez pas d'ajouter l'appel à apply_P_normalizer() comme discuté précédemment !
-    if args.dataset_size > 0:
-        dataset.elements = random.sample(dataset.elements, args.dataset_size)
+    
 
     dataset.get_normalizers()
 
@@ -108,6 +112,11 @@ def setup_datasets():
     
     train_dataset.set_normalizers(dataset)
     test_dataset.set_normalizers(dataset)
+
+    if args.dataset_size > 0:
+        train_dataset.elements = random.sample(train_dataset.elements, args.dataset_size)
+        test_dataset.elements = random.sample(test_dataset.elements, args.dataset_size*10)
+
 
     return train_dataset, test_dataset
 

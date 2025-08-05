@@ -59,6 +59,17 @@ def run_diagnostics(
             Nt = int(p_raw.Nt.item()) if isinstance(p_raw.Nt, Tensor) else int(p_raw.Nt)
             Nr = int(p_raw.Nr.item()) if isinstance(p_raw.Nr, Tensor) else int(p_raw.Nr)
 
+            # --- RÉCUPÈRE LES PARAMÈTRES RACINE (non rescalés) POUR LES VALEURS RÉELLES / AFFICHAGE ---
+            p_root: FickParams = p_raw.get_root_parent()
+            R_true   = float(p_root.R.item()) if isinstance(p_root.R, Tensor) else float(p_root.R)
+            rmax     = float(p_root.r_max.item()) if isinstance(p_root.r_max, Tensor) else float(p_root.r_max)
+            tmax     = float(p_root.t_max.item()) if isinstance(p_root.t_max, Tensor) else float(p_root.t_max)
+
+            Cin, Cout   = float(p_root.C_in.item()), float(p_root.C_out.item())
+            Din, Dout   = float(p_root.D_in.item()), float(p_root.D_out.item())
+            T1in, T1out = float(p_root.T1_in.item()), float(p_root.T1_out.item())
+            P0in, P0out = float(p_root.P0_in.item()), float(p_root.P0_out.item())
+
             p_for_pred = p_raw.to(device)
             p_for_pred.Nt = torch.tensor(Nt, device=device)
             p_for_pred.Nr = torch.tensor(Nr, device=device)
@@ -81,29 +92,22 @@ def run_diagnostics(
             Gin_rel  = _rel_err(G_in_pred, G_in_true)
             Gout_rel = _rel_err(G_out_pred, G_out_true)
 
+            # --- Recherche de R et conversion en unité ABSOLUE ---
             Rin_pred_val, Rout_pred_val = None, None
             if hasattr(model, "search_R_in"):
                 try:
                     Rin_list = model.search_R_in([p_raw], G_in_true, Nt, Nr)
-                    Rin_pred_val = float(Rin_list[0].detach().cpu().item())
+                    Rin_pred_dimless = float(Rin_list[0].detach().cpu().item())  # ceci est R/r_max (rescaled)
+                    Rin_pred_val = Rin_pred_dimless * rmax                        # reviens à R absolu
                 except Exception as e:
                     print(f"[WARN] search_R_in a échoué pour échantillon {i}: {e}")
             if hasattr(model, "search_R_out"):
                 try:
                     Rout_list = model.search_R_out([p_raw], G_out_true, Nt, Nr)
-                    Rout_pred_val = float(Rout_list[0].detach().cpu().item())
+                    Rout_pred_dimless = float(Rout_list[0].detach().cpu().item()) # ceci est R/r_max (rescaled)
+                    Rout_pred_val = Rout_pred_dimless * rmax                       # reviens à R absolu
                 except Exception as e:
                     print(f"[WARN] search_R_out a échoué pour échantillon {i}: {e}")
-
-            p_root: FickParams = p_raw.get_root_parent()
-            R_true   = float(p_root.R.item()) if isinstance(p_root.R, Tensor) else float(p_root.R)
-            rmax     = float(p_root.r_max.item()) if isinstance(p_root.r_max, Tensor) else float(p_root.r_max)
-            tmax     = float(p_root.t_max.item()) if isinstance(p_root.t_max, Tensor) else float(p_root.t_max)
-
-            Cin, Cout   = float(p_root.C_in.item()), float(p_root.C_out.item())
-            Din, Dout   = float(p_root.D_in.item()), float(p_root.D_out.item())
-            T1in, T1out = float(p_root.T1_in.item()), float(p_root.T1_out.item())
-            P0in, P0out = float(p_root.P0_in.item()), float(p_root.P0_out.item())
 
             R_over_rmax     = R_true / (rmax + 1e-12)
             Din_over_Dout   = Din / (Dout + 1e-12)
@@ -183,8 +187,8 @@ def run_diagnostics(
                 "Gin_rel": Gin_rel,
                 "Gout_rel": Gout_rel,
                 "R_true": R_true,
-                "R_in_pred": Rin_pred_val,
-                "R_out_pred": Rout_pred_val,
+                "R_in_pred": Rin_pred_val,     # ABSOLU
+                "R_out_pred": Rout_pred_val,   # ABSOLU
                 "R_over_rmax": R_over_rmax,
                 "Cin_over_Cout": Cin_over_Cout,
                 "Din_over_Dout": Din_over_Dout,
@@ -274,3 +278,4 @@ def plot_correlations(results: List[Dict[str, Any]], out_dir: str) -> None:
             plt.close()
 
     print(f"Graphiques de corrélation sauvegardés dans : {out_dir}")
+
