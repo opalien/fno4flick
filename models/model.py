@@ -74,7 +74,7 @@ class FickModel(nn.Module):
             optim_params_processed.append(p_proc)
             trainable_R_list.append(p_proc.R)
 
-        optimizer = torch.optim.Adam(trainable_R_list, lr=1e-3)
+        optimizer = torch.optim.Adam(trainable_R_list, lr=5e-2)
         n_steps = 100
 
         prev_abs = [None for _ in optim_params_processed]
@@ -133,7 +133,7 @@ class FickModel(nn.Module):
             optim_params_processed.append(p_proc)
             trainable_R_list.append(p_proc.R)
 
-        optimizer = torch.optim.Adam(trainable_R_list, lr=1e-3)
+        optimizer = torch.optim.Adam(trainable_R_list, lr=5e-2)
         n_steps, eps = 100, 1e-4
         prev_abs = [None for _ in optim_params_processed]
 
