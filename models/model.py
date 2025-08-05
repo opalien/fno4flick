@@ -72,8 +72,6 @@ class FickModel(nn.Module):
 
 
 
-# models/model.py (à l'intérieur de la classe FickModel)
-
     def search_R_in(self, list_params: list[FickParams], G_true: Tensor, Nt: int, Nr: int) -> list[Tensor]:
         
         optim_params_processed = []
@@ -90,7 +88,7 @@ class FickModel(nn.Module):
             )
             # 2. Remplace R par un paramètre optimisable
             initial_R = p_proc.R.detach().clone()
-            p_proc.R = nn.Parameter(initial_R)
+            p_proc.R = nn.Parameter(p_proc.R.detach().clone().to(self.device))
             optim_params_processed.append(p_proc)
             trainable_R_list.append(p_proc.R)
 
@@ -103,11 +101,11 @@ class FickModel(nn.Module):
             s = (2 * Nt, 2 * Nr)
             PARAMS = torch.empty(len(optim_params_processed), 5, *s, device=self.device)
             for i, params in enumerate(optim_params_processed):
-                PARAMS[i, 0] = params.C_in.expand(s)
-                PARAMS[i, 1] = params.D_in.expand(s)
-                PARAMS[i, 2] = params.D_out.expand(s)
-                PARAMS[i, 3] = params.T1_in.expand(s)
-                PARAMS[i, 4] = params.R.expand(s) # Utilise le nn.Parameter
+                PARAMS[i, 0] = params.C_in.to(self.device).expand(s)
+                PARAMS[i, 1] = params.D_in.to(self.device).expand(s)
+                PARAMS[i, 2] = params.D_out.to(self.device).expand(s)
+                PARAMS[i, 3] = params.T1_in.to(self.device).expand(s)
+                PARAMS[i, 4] = params.R.to(self.device).expand(s) # Utilise le nn.Parameter
 
             # 4. Appelle fno directement
             fick_fno = self.fno(PARAMS)
@@ -139,7 +137,7 @@ class FickModel(nn.Module):
             )
             # 2. Remplace R par un paramètre optimisable
             initial_R = p_proc.R.detach().clone()
-            p_proc.R = nn.Parameter(initial_R)
+            p_proc.R = nn.Parameter(p_proc.R.detach().clone().to(self.device))
             optim_params_processed.append(p_proc)
             trainable_R_list.append(p_proc.R)
 
@@ -153,11 +151,11 @@ class FickModel(nn.Module):
             s = (2 * Nt, 2 * Nr)
             PARAMS = torch.empty(len(optim_params_processed), 5, *s, device=self.device)
             for i, params in enumerate(optim_params_processed):
-                PARAMS[i, 0] = params.C_in.expand(s)
-                PARAMS[i, 1] = params.D_in.expand(s)
-                PARAMS[i, 2] = params.D_out.expand(s)
-                PARAMS[i, 3] = params.T1_in.expand(s)
-                PARAMS[i, 4] = params.R.expand(s)
+                PARAMS[i, 0] = params.C_in.to(self.device).expand(s)
+                PARAMS[i, 1] = params.D_in.to(self.device).expand(s)
+                PARAMS[i, 2] = params.D_out.to(self.device).expand(s)
+                PARAMS[i, 3] = params.T1_in.to(self.device).expand(s)
+                PARAMS[i, 4] = params.R.to(self.device).expand(s)
 
             # 4. Appelle fno directement
             fick_fno = self.fno(PARAMS)

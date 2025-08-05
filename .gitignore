@@ -9,7 +9,7 @@ data_R/*
 *.pth
 *.pt
 project.txt
-*_old.py
+*_old*
 *params
 *.json
 *.jsonl

@@ -9,6 +9,42 @@ from util.G_method import compute_G_in, compute_G_out
 lp_loss = LpLoss(d=2, p=2, reduction="mean") 
 
 
+#def R_error_old(model: FickModel,
+#            dataloader: torch.utils.data.DataLoader,
+#            device: torch.device) -> tuple[float, float]:
+#    
+#    model.eval()
+#    model.to(device)
+#    
+#    loss_in = 0.0
+#    loss_out = 0.0
+#    n = 0
+#    with torch.no_grad():
+#        for params, P in dataloader:
+#            batch_size = len(params)
+#            n+=batch_size
+#            params = [p.to(device) for p in params]
+#            
+#            P = postprocess(P)
+#            
+#            G_in_true = compute_G_in(P)
+#            list_R_in_pred = torch.tensor(model.search_R_in(params,  G_in_true, device))
+#
+#            R_true_tensor = torch.stack([p.R for p in params])
+#            loss_in += torch.mean(torch.abs(R_true_tensor - list_R_in_pred)/R_true_tensor) * batch_size
+#
+#            G_out_true = compute_G_out(P, params)
+#            list_R_out_pred = torch.tensor(model.search_R_out(params,  G_out_true, device))
+#
+#            R_true_tensor = torch.stack([p.R for p in params])
+#            loss_out += torch.mean(torch.abs(R_true_tensor - list_R_out_pred)/R_true_tensor) * batch_size
+#            
+#            params = [p.to("cpu") for p in params]
+#
+#    return loss_in / n, loss_out / n
+#
+#
+
 def R_error(model: FickModel,
             dataloader: torch.utils.data.DataLoader,
             device: torch.device) -> tuple[float, float]:
@@ -22,28 +58,28 @@ def R_error(model: FickModel,
     with torch.no_grad():
         for params, P in dataloader:
             batch_size = len(params)
-            n+=batch_size
+            n += batch_size
+
+            Nt = int(params[0].Nt.item())
+            Nr = int(params[0].Nr.item())
+
             params = [p.to(device) for p in params]
-            
-            P = postprocess(P)
-            
-            G_in_true = compute_G_in(P)
-            list_R_in_pred = torch.tensor(model.search_R_in(params,  G_in_true, device))
+            P = postprocess(P)  # (B, 2, Nt, Nr)
 
-            R_true_tensor = torch.stack([p.R for p in params])
-            loss_in += torch.mean(torch.abs(R_true_tensor - list_R_in_pred)/R_true_tensor) * batch_size
+            G_in_true = compute_G_in(P)  # (B, Nt)
+            list_R_in_pred = model.search_R_in(params, G_in_true, Nt, Nr)
+            R_true_tensor = torch.stack([p.R for p in params]).to(device)
+            R_in_pred_tensor = torch.stack(list_R_in_pred).to(device)
+            loss_in += torch.mean(torch.abs(R_true_tensor - R_in_pred_tensor) / (R_true_tensor + 1e-12)) * batch_size
 
-            G_out_true = compute_G_out(P, params)
-            list_R_out_pred = torch.tensor(model.search_R_out(params,  G_out_true, device))
+            G_out_true = compute_G_out(P, params)  # (B, Nt)
+            list_R_out_pred = model.search_R_out(params, G_out_true, Nt, Nr)
+            R_out_pred_tensor = torch.stack(list_R_out_pred).to(device)
+            loss_out += torch.mean(torch.abs(R_true_tensor - R_out_pred_tensor) / (R_true_tensor + 1e-12)) * batch_size
 
-            R_true_tensor = torch.stack([p.R for p in params])
-            loss_out += torch.mean(torch.abs(R_true_tensor - list_R_out_pred)/R_true_tensor) * batch_size
-            
             params = [p.to("cpu") for p in params]
 
-    return loss_in / n, loss_out / n
-
-
+    return loss_in.item() / n, loss_out.item() / n
 
 
 

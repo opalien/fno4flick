@@ -30,8 +30,7 @@ def compute_G_out(fick: Tensor, list_params: list[FickParams]) -> Tensor:
     P_out = fick[:, 1]  # (B, Nt, Nr)
 
     # R normalisé (après rescaling ⇒ r_max=1)
-    R = torch.stack([p.get_root_parent().rescaling().R for p in list_params]) \
-            .to(device=P_out.device, dtype=P_out.dtype)                    # (B,)
+    R = torch.stack([p.rescaling().R for p in list_params]).to(P_out.device, P_out.dtype)               # (B,)
 
     eta = torch.linspace(0.0, 1.0, Nr, device=P_out.device, dtype=P_out.dtype)  # (Nr,)
     r   = R[:, None, None] + (1.0 - R)[:, None, None] * eta[None, None, :]      # (B, Nt, Nr)
@@ -43,6 +42,16 @@ def compute_G_out(fick: Tensor, list_params: list[FickParams]) -> Tensor:
 
 
 def G_error(G_pred: Tensor, G_true: Tensor) -> Tensor:
-    G_diff = (k:=torch.max(torch.tensor(0.), G_true))*(G_pred - G_true)
+    zero = torch.zeros_like(G_true)
+    k = torch.maximum(zero, G_true)
+    diff = k * (G_pred - G_true)
+    num = torch.linalg.norm(diff.reshape(diff.shape[0], -1), dim=1).mean()
+    den = torch.linalg.norm(k.reshape(k.shape[0], -1), dim=1).mean().clamp_min(1e-12)
+    return num / den
 
-    return torch.norm(G_diff, p=2)/torch.norm(k, p=2)
+
+
+#def G_error(G_pred: Tensor, G_true: Tensor) -> Tensor:
+#    G_diff = (k:=torch.max(torch.tensor(0.), G_true))*(G_pred - G_true)
+#
+#    return torch.norm(G_diff, p=2)/torch.norm(k, p=2)

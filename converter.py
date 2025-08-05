@@ -71,6 +71,7 @@ if __name__ == "__main__":
         ".tar",
         ".7z",
         ".zip",
+        "readme"
         
     ]
 
