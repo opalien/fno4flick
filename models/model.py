@@ -70,7 +70,7 @@ class FickModel(nn.Module):
                 R_normalizer=self.R_normalizer.normalize,
                 T1_normalizer=self.T1_normalizer.normalize
             )
-            p_proc.R = nn.Parameter(p_proc.R.detach().clone().to(self.device))
+            p_proc.R = nn.Parameter((p_proc.r_max/2).detach().clone().to(self.device))
             optim_params_processed.append(p_proc)
             trainable_R_list.append(p_proc.R)
 
@@ -129,7 +129,7 @@ class FickModel(nn.Module):
                 R_normalizer=self.R_normalizer.normalize,
                 T1_normalizer=self.T1_normalizer.normalize
             )
-            p_proc.R = nn.Parameter(p_proc.R.detach().clone().to(self.device))
+            p_proc.R = nn.Parameter((p_proc.r_max/2).detach().clone().to(self.device))
             optim_params_processed.append(p_proc)
             trainable_R_list.append(p_proc.R)
 
