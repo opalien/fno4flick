@@ -151,14 +151,14 @@ class FickModel(nn.Module):
 
                 #########################################################
 
-                grid = torch.linspace(0.00, 1., 1000)
+                grid = torch.linspace(0.00, 1., 100)
                 losses = [loss_at(float(r)) for r in grid]
                 plt.plot(grid, losses)
                 plt.title(f"G_error en fonction de R (sample {bidx})")
                 plt.xlabel("R (rescaled)")
                 plt.ylabel("G_error")
                 plt.grid(True)
-                plt.savefig(f"loss_curve_Rin_sample{bidx}.png")
+                plt.savefig(f"loss_curve_Rin_sample_{i}.png")
                 plt.close()
                 i+=1
 
