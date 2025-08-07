@@ -1,5 +1,6 @@
 from typing import Tuple
 
+from matplotlib import pyplot as plt
 import torch
 from torch import Tensor
 import torch.nn as nn
@@ -143,6 +144,23 @@ class FickModel(nn.Module):
                     G_pred = compute_G_in(fick)
                     l = G_error(G_pred, G_true[bidx : bidx + 1])
                     return float(l)
+
+
+
+                #########################################################
+
+                grid = torch.linspace(0.00, 1., 1000)
+                losses = [loss_at(float(r)) for r in grid]
+                plt.plot(grid, losses)
+                plt.title(f"G_error en fonction de R (sample {bidx})")
+                plt.xlabel("R (rescaled)")
+                plt.ylabel("G_error")
+                plt.grid(True)
+                plt.savefig(f"loss_curve_Rin_sample{bidx}.png")
+                plt.close()
+
+
+                #########################################################
 
                 # --- 1) Balayage grossier pour bracketer le minimum
                 grid_N = 21
