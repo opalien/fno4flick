@@ -10,6 +10,7 @@ from neuralop.models import FNO
 from util.fick_params import FickParams, Normalizer
 from util.G_method import compute_G_in, compute_G_out, G_error
 
+i = 0
 
 class FickModel(nn.Module):
     def __init__(self, n_modes: Tuple[int], n_layers: int, hidden_channels: int, device: torch.device):
@@ -99,7 +100,7 @@ class FickModel(nn.Module):
         n_steps = 60
         out_list: list[Tensor] = []
 
-        i = 0
+
         with torch.no_grad():
             for bidx, p in enumerate(list_params):
                 p_proc = (
@@ -150,7 +151,7 @@ class FickModel(nn.Module):
 
 
                 #########################################################
-
+                global i
                 grid = torch.linspace(0.00, 1., 100)
                 losses = [loss_at(float(r)) for r in grid]
                 plt.plot(grid, losses)
