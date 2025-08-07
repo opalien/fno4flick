@@ -99,6 +99,7 @@ class FickModel(nn.Module):
         n_steps = 60
         out_list: list[Tensor] = []
 
+        i = 0
         with torch.no_grad():
             for bidx, p in enumerate(list_params):
                 p_proc = (
@@ -141,6 +142,7 @@ class FickModel(nn.Module):
                     )
                     fick_fno = self._forward_from_processed([p_tmp], Nt, Nr)
                     fick = postprocess(fick_fno)
+                    fick = self.P_normalizer.unnormalize(fick)
                     G_pred = compute_G_in(fick)
                     l = G_error(G_pred, G_true[bidx : bidx + 1])
                     return float(l)
@@ -158,6 +160,7 @@ class FickModel(nn.Module):
                 plt.grid(True)
                 plt.savefig(f"loss_curve_Rin_sample{bidx}.png")
                 plt.close()
+                i+=1
 
 
                 #########################################################
@@ -265,6 +268,7 @@ class FickModel(nn.Module):
                     )
                     fick_fno = self._forward_from_processed([p_tmp], Nt, Nr)
                     fick = postprocess(fick_fno)
+                    fick = self.P_normalizer.unnormalize(fick)
                     # compute_G_out a besoin d'un paramètre cohérent pour R (dimensionless) → on passe p_tmp
                     G_pred = compute_G_out(fick, [p_tmp])
                     l = G_error(G_pred, G_true[bidx : bidx + 1])

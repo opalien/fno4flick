@@ -34,13 +34,17 @@ def _rel_err(a: Tensor, b: Tensor) -> float:
     den = torch.linalg.norm(b.reshape(-1)).item() + 1e-12
     return num / den
 
-
 def run_diagnostics(
     model: FickModel,
     dataset: torch.utils.data.Dataset,
     device: torch.device,
     out_dir: str,
 ) -> List[dict]:
+    """
+    Génère, pour chaque échantillon du dataset, un diagnostic visuel et des
+    métriques d'erreur. Les tenseurs P_true et P_pred sont maintenant
+    DÉ-NORMALISÉS avant le calcul de G_in/out et des erreurs.
+    """
     os.makedirs(out_dir, exist_ok=True)
     per_sample_dir = os.path.join(out_dir, "per_sample")
     os.makedirs(per_sample_dir, exist_ok=True)
@@ -52,6 +56,7 @@ def run_diagnostics(
 
     for i, elem in enumerate(getattr(dataset, "elements", [])):
         try:
+            # ---------------- lecture / préparation ----------------
             p_raw, P_2c_true = _ensure_pair(elem)  # (2, Nt, Nr)
             if P_2c_true.ndim != 3 or P_2c_true.shape[0] != 2:
                 raise ValueError(f"P_2c_true doit être (2, Nt, Nr), reçu {tuple(P_2c_true.shape)}")
@@ -59,28 +64,33 @@ def run_diagnostics(
             Nt = int(p_raw.Nt.item()) if isinstance(p_raw.Nt, Tensor) else int(p_raw.Nt)
             Nr = int(p_raw.Nr.item()) if isinstance(p_raw.Nr, Tensor) else int(p_raw.Nr)
 
-            # --- RÉCUPÈRE LES PARAMÈTRES RACINE (non rescalés) POUR LES VALEURS RÉELLES / AFFICHAGE ---
+            # --- paramètres racine (pour valeurs réelles / affichage) ---
             p_root: FickParams = p_raw.get_root_parent()
             R_true   = float(p_root.R.item()) if isinstance(p_root.R, Tensor) else float(p_root.R)
             rmax     = float(p_root.r_max.item()) if isinstance(p_root.r_max, Tensor) else float(p_root.r_max)
             tmax     = float(p_root.t_max.item()) if isinstance(p_root.t_max, Tensor) else float(p_root.t_max)
-
             Cin, Cout   = float(p_root.C_in.item()), float(p_root.C_out.item())
             Din, Dout   = float(p_root.D_in.item()), float(p_root.D_out.item())
             T1in, T1out = float(p_root.T1_in.item()), float(p_root.T1_out.item())
             P0in, P0out = float(p_root.P0_in.item()), float(p_root.P0_out.item())
 
+            # --------------------- prédiction modèle ---------------------
             p_for_pred = p_raw.to(device)
             p_for_pred.Nt = torch.tensor(Nt, device=device)
             p_for_pred.Nr = torch.tensor(Nr, device=device)
 
             with torch.no_grad():
-                fick_fno = model.forward([p_for_pred])  # (B=1, 2, 2Nt, 2Nr)
-                fick = postprocess(fick_fno)            # (B=1, 2, Nt, Nr)
+                fick_fno = model.forward([p_for_pred])     # (B=1, 2, 2Nt, 2Nr)
+                fick = postprocess(fick_fno)               # (B=1, 2, Nt, Nr)
 
-            P_true_b = P_2c_true.unsqueeze(0).to(device)  # (B=1, 2, Nt, Nr)
-            P_pred_b = fick                                # (B=1, 2, Nt, Nr)
+            # ------------------- DÉ-NORMALISATION -------------------
+            P_true_b = P_2c_true.unsqueeze(0).to(device)          # (B=1, 2, Nt, Nr)  normalisé
+            P_pred_b = fick                                        # (B=1, 2, Nt, Nr)  normalisé
+            P_true_b = model.P_normalizer.unnormalize(P_true_b)    # ← nouveau
+            P_pred_b = model.P_normalizer.unnormalize(P_pred_b)    # ← nouveau
+            # -------------------------------------------------------
 
+            # ------------------- métriques G / erreurs -------------------
             with torch.no_grad():
                 G_in_true  = compute_G_in(P_true_b)                    # (B=1, Nt)
                 G_in_pred  = compute_G_in(P_pred_b)                    # (B=1, Nt)
@@ -92,32 +102,33 @@ def run_diagnostics(
             Gin_rel  = _rel_err(G_in_pred, G_in_true)
             Gout_rel = _rel_err(G_out_pred, G_out_true)
 
-            # --- Recherche de R et conversion en unité ABSOLUE ---
+            # ------------------- recherche de R -------------------
             Rin_pred_val, Rout_pred_val = None, None
             if hasattr(model, "search_R_in"):
                 try:
                     Rin_list = model.search_R_in([p_raw], G_in_true, Nt, Nr)
-                    Rin_pred_dimless = float(Rin_list[0].detach().cpu().item())  # ceci est R/r_max (rescaled)
-                    Rin_pred_val = Rin_pred_dimless * rmax                        # reviens à R absolu
+                    Rin_pred_dimless = float(Rin_list[0].detach().cpu().item())
+                    Rin_pred_val = Rin_pred_dimless * rmax
                 except Exception as e:
                     print(f"[WARN] search_R_in a échoué pour échantillon {i}: {e}")
             if hasattr(model, "search_R_out"):
                 try:
                     Rout_list = model.search_R_out([p_raw], G_out_true, Nt, Nr)
-                    Rout_pred_dimless = float(Rout_list[0].detach().cpu().item()) # ceci est R/r_max (rescaled)
-                    Rout_pred_val = Rout_pred_dimless * rmax                       # reviens à R absolu
+                    Rout_pred_dimless = float(Rout_list[0].detach().cpu().item())
+                    Rout_pred_val = Rout_pred_dimless * rmax
                 except Exception as e:
                     print(f"[WARN] search_R_out a échoué pour échantillon {i}: {e}")
 
+            # ------------------- ratios / longueurs utiles -------------------
             R_over_rmax     = R_true / (rmax + 1e-12)
             Din_over_Dout   = Din / (Dout + 1e-12)
             Cin_over_Cout   = Cin / (Cout + 1e-12)
             T1in_over_T1out = T1in / (T1out + 1e-12)
             P0in_over_P0out = P0in / (P0out + 1e-12)
-
             Lin_eff  = np.sqrt(max(Din, 0.0)  * max(min(T1in,  tmax), 0.0))
             Lout_eff = np.sqrt(max(Dout, 0.0) * max(min(T1out, tmax), 0.0))
 
+            # ------------------- graphiques -------------------
             P_true_np = _to_numpy(P_true_b.squeeze(0))
             P_pred_np = _to_numpy(P_pred_b.squeeze(0))
             Gin_t = _to_numpy(G_in_true.squeeze(0))
@@ -180,6 +191,7 @@ def run_diagnostics(
             fig.savefig(os.path.join(per_sample_dir, f"sample_{i:04d}.png"))
             plt.close(fig)
 
+            # ------------------- stockage résultats -------------------
             result = {
                 "idx": i,
                 "Pin_rel": Pin_rel,
@@ -187,8 +199,8 @@ def run_diagnostics(
                 "Gin_rel": Gin_rel,
                 "Gout_rel": Gout_rel,
                 "R_true": R_true,
-                "R_in_pred": Rin_pred_val,     # ABSOLU
-                "R_out_pred": Rout_pred_val,   # ABSOLU
+                "R_in_pred": Rin_pred_val,
+                "R_out_pred": Rout_pred_val,
                 "R_over_rmax": R_over_rmax,
                 "Cin_over_Cout": Cin_over_Cout,
                 "Din_over_Dout": Din_over_Dout,
@@ -207,6 +219,7 @@ def run_diagnostics(
             import traceback
             traceback.print_exc()
 
+    # ------------------- écriture JSONL -------------------
     jsonl_path = os.path.join(out_dir, "diagnostics_metrics.jsonl")
     with open(jsonl_path, "w") as f:
         for r in results:
