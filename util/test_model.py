@@ -240,38 +240,57 @@ def _finite_mask(*arrays: np.ndarray) -> np.ndarray:
 
 
 def plot_correlations(results: List[Dict[str, Any]], out_dir: str) -> None:
+    """
+    Trace des nuages de points (X, Y) pour différentes paires de variables
+    et enregistre les figures dans `out_dir`.
+
+    Ajouts par rapport à la version d’origine
+    -----------------------------------------
+    • Axe X supplémentaire :  Penetration_in/R = √(D_in · T1_in) / R_true
+    • Toujours un logarithme en Y pour mieux voir la dispersion des erreurs.
+    """
     os.makedirs(out_dir, exist_ok=True)
     if not results:
         print("Aucun résultat pour les corrélations.")
         return
 
-    R_true = _vec(results, "R_true")
-    Rin_pred = _vec(results, "R_in_pred")
+    # ---------- vecteurs utiles ----------
+    R_true    = _vec(results, "R_true")
+    Rin_pred  = _vec(results, "R_in_pred")
     Rout_pred = _vec(results, "R_out_pred")
 
+    # --------- métriques Y (erreurs) ---------
     Y_dict = {
-        "Erreur P_in": _vec(results, "Pin_rel"),
-        "Erreur P_out": _vec(results, "Pout_rel"),
-        "Erreur G_in": _vec(results, "Gin_rel"),
-        "Erreur G_out": _vec(results, "Gout_rel"),
-        "Erreur R_in": np.abs(Rin_pred - R_true) / (np.abs(R_true) + 1e-12),
+        "Erreur R_in":  np.abs(Rin_pred  - R_true) / (np.abs(R_true) + 1e-12),
         "Erreur R_out": np.abs(Rout_pred - R_true) / (np.abs(R_true) + 1e-12),
+        "Erreur P_in":  _vec(results, "Pin_rel"),
+        "Erreur P_out": _vec(results, "Pout_rel"),
+        "Erreur G_in":  _vec(results, "Gin_rel"),
+        "Erreur G_out": _vec(results, "Gout_rel"),
     }
+
+    # ---------- grandeurs X ----------
+    L_eff_in  = _vec(results, "Lin_eff")
+    penetration_ratio = L_eff_in / (R_true + 1e-12)   # √(D_in·T1_in) / R
 
     X_dict = {
-        "R/r_max": _vec(results, "R_over_rmax"),
-        "D_in/D_out": _vec(results, "Din_over_Dout"),
-        "C_in/C_out": _vec(results, "Cin_over_Cout"),
-        "T1_in/T1_out": _vec(results, "T1in_over_T1out"),
-        "L_eff_in": _vec(results, "Lin_eff"),
-        "L_eff_out": _vec(results, "Lout_eff"),
+        "R/r_max":          _vec(results, "R_over_rmax"),
+        "D_in/D_out":       _vec(results, "Din_over_Dout"),
+        "C_in/C_out":       _vec(results, "Cin_over_Cout"),
+        "T1_in/T1_out":     _vec(results, "T1in_over_T1out"),
+        "L_eff_in":         L_eff_in,
+        "L_eff_out":        _vec(results, "Lout_eff"),
+        "Penetration_in/R": penetration_ratio,   # ← ajout
     }
 
+    # ---------- boucle de tracés ----------
     for x_label, x_vals in X_dict.items():
         for y_label, y_vals in Y_dict.items():
+
             mask = _finite_mask(x_vals, y_vals)
-            if np.sum(mask) < 2:
+            if np.sum(mask) < 2:          # pas assez de points fins
                 continue
+
             xv, yv = x_vals[mask], y_vals[mask]
             r = np.corrcoef(xv, yv)[0, 1]
 
@@ -284,11 +303,12 @@ def plot_correlations(results: List[Dict[str, Any]], out_dir: str) -> None:
             plt.grid(True, which="both", ls="--")
             plt.tight_layout()
 
-            clean_xlabel = x_label.replace('/', 'sur').replace(' ', '_')
-            clean_ylabel = y_label.replace(' ', '_')
+            # nom de fichier lisible / sans caractères spéciaux
+            clean_xlabel = x_label.replace('/', '_').replace(' ', '_')
+            clean_ylabel = y_label.replace('/', '_').replace(' ', '_')
             fname = f"{clean_ylabel}_vs_{clean_xlabel}.png"
+
             plt.savefig(os.path.join(out_dir, fname))
             plt.close()
 
     print(f"Graphiques de corrélation sauvegardés dans : {out_dir}")
-
